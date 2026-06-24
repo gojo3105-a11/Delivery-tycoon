@@ -1,0 +1,1568 @@
+<title>고슴도치 배달 타이쿤 — Unity 개발 스펙</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0C0F1A;
+    --surface:   #141828;
+    --card:      #1C2035;
+    --border:    #262D48;
+    --accent:    #FF7A30;
+    --teal:      #3DC8B8;
+    --gold:      #FFCC44;
+    --purple:    #A06FD8;
+    --text:      #F0EDE6;
+    --muted:     #8892B5;
+    --common:    #9BA3C0;
+    --rare:      #4EA0F7;
+    --epic:      #A06FD8;
+    --legendary: #FFCC44;
+    --mythic:    #FF6BBA;
+    --danger:    #FF4D6A;
+    --success:   #3DC8B8;
+    --nav-w:     240px;
+    --mono:      'Courier New', 'Consolas', monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: -apple-system, 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px;
+    line-height: 1.6;
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── SIDEBAR NAV ─────────────────────────────────────────── */
+  .nav {
+    width: var(--nav-w);
+    min-height: 100vh;
+    background: var(--surface);
+    border-right: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nav-brand {
+    padding: 20px 16px 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .nav-title {
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-bottom: 4px;
+  }
+
+  .nav-game-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--accent);
+    line-height: 1.3;
+  }
+
+  .nav-version {
+    font-size: 11px;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin-top: 3px;
+  }
+
+  .hedgehog-canvas {
+    display: block;
+    margin: 14px auto 0;
+  }
+
+  .nav-section-label {
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+    padding: 16px 16px 6px;
+  }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 16px;
+    font-size: 13px;
+    color: var(--muted);
+    cursor: pointer;
+    border-left: 2px solid transparent;
+    transition: color 0.15s, border-color 0.15s, background 0.15s;
+    text-decoration: none;
+  }
+
+  .nav-item:hover { color: var(--text); background: rgba(255,122,48,0.06); }
+  .nav-item.active { color: var(--accent); border-left-color: var(--accent); background: rgba(255,122,48,0.08); }
+
+  .nav-icon { font-size: 14px; min-width: 18px; text-align: center; }
+
+  /* ── MAIN CONTENT ────────────────────────────────────────── */
+  .main {
+    flex: 1;
+    min-width: 0;
+    overflow-y: auto;
+    padding: 0;
+  }
+
+  .section {
+    display: none;
+    padding: 40px 48px 64px;
+    max-width: 960px;
+  }
+
+  .section.active { display: block; }
+
+  /* ── PAGE HEADERS ────────────────────────────────────────── */
+  .page-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 8px;
+  }
+
+  .page-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--text);
+    text-wrap: balance;
+    line-height: 1.2;
+    margin-bottom: 6px;
+  }
+
+  .page-sub {
+    font-size: 14px;
+    color: var(--muted);
+    margin-bottom: 32px;
+    line-height: 1.5;
+  }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 28px 0;
+  }
+
+  /* ── SECTION HEADERS ─────────────────────────────────────── */
+  h2 {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin: 36px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2::before {
+    content: '';
+    display: block;
+    width: 3px;
+    height: 18px;
+    background: var(--accent);
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  h3 {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-family: var(--mono);
+    margin: 24px 0 10px;
+  }
+
+  p { margin-bottom: 14px; color: var(--muted); line-height: 1.7; }
+  p strong { color: var(--text); }
+
+  /* ── CARDS ───────────────────────────────────────────────── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px 20px;
+    margin-bottom: 12px;
+  }
+
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .card-desc { font-size: 13px; color: var(--muted); line-height: 1.5; }
+
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 12px;
+    margin-bottom: 12px;
+  }
+
+  /* ── FORMULA CARDS ───────────────────────────────────────── */
+  .formula-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px 20px 20px 24px;
+    margin-bottom: 16px;
+    border-left: 3px solid var(--teal);
+    position: relative;
+  }
+
+  .formula-card .fc-number {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--teal);
+    margin-bottom: 4px;
+  }
+
+  .formula-card .fc-name {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 10px;
+  }
+
+  .formula-card code {
+    display: block;
+    background: rgba(61,200,184,0.07);
+    border: 1px solid rgba(61,200,184,0.15);
+    border-radius: 5px;
+    padding: 10px 14px;
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--teal);
+    white-space: pre-wrap;
+    margin-bottom: 10px;
+  }
+
+  .formula-card .fc-note { font-size: 12px; color: var(--muted); }
+
+  /* ── TABLES ──────────────────────────────────────────────── */
+  .table-wrap { overflow-x: auto; margin-bottom: 20px; }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    min-width: 400px;
+    font-size: 13px;
+  }
+
+  th {
+    text-align: left;
+    padding: 8px 12px;
+    background: var(--surface);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+    font-weight: 600;
+  }
+
+  td {
+    padding: 9px 12px;
+    border-bottom: 1px solid rgba(38,45,72,0.6);
+    color: var(--muted);
+    vertical-align: top;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(255,122,48,0.03); }
+  td strong, td b { color: var(--text); font-weight: 600; }
+  td code {
+    font-family: var(--mono);
+    background: rgba(255,122,48,0.08);
+    color: var(--accent);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+  }
+
+  /* ── RARITY BADGES ───────────────────────────────────────── */
+  .rarity {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 700;
+    font-family: var(--mono);
+    letter-spacing: 0.05em;
+  }
+  .rarity.common    { background: rgba(155,163,192,0.12); color: var(--common); border: 1px solid rgba(155,163,192,0.25); }
+  .rarity.rare      { background: rgba(78,160,247,0.12);  color: var(--rare);   border: 1px solid rgba(78,160,247,0.25); }
+  .rarity.epic      { background: rgba(160,111,216,0.12); color: var(--epic);   border: 1px solid rgba(160,111,216,0.25); }
+  .rarity.legendary { background: rgba(255,204,68,0.12);  color: var(--legendary); border: 1px solid rgba(255,204,68,0.25); }
+  .rarity.mythic    { background: rgba(255,107,186,0.12); color: var(--mythic); border: 1px solid rgba(255,107,186,0.25); }
+
+  /* ── RARITY CARDS ────────────────────────────────────────── */
+  .rarity-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(155px, 1fr)); gap: 10px; margin-bottom: 20px; }
+
+  .rarity-card {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .rarity-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .rarity-card.common::before    { background: var(--common); }
+  .rarity-card.rare::before      { background: var(--rare); }
+  .rarity-card.epic::before      { background: var(--epic); }
+  .rarity-card.legendary::before { background: linear-gradient(90deg,var(--legendary),var(--accent)); }
+  .rarity-card.mythic::before    { background: linear-gradient(90deg,var(--mythic),var(--purple),var(--teal)); }
+
+  .rarity-card .rc-tier { font-size: 11px; font-family: var(--mono); letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; text-transform: uppercase; }
+  .rarity-card .rc-mult { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; margin-bottom: 2px; }
+  .rarity-card.common    .rc-mult { color: var(--common); }
+  .rarity-card.rare      .rc-mult { color: var(--rare); }
+  .rarity-card.epic      .rc-mult { color: var(--epic); }
+  .rarity-card.legendary .rc-mult { color: var(--legendary); }
+  .rarity-card.mythic    .rc-mult { color: var(--mythic); }
+  .rarity-card .rc-label { font-size: 11px; color: var(--muted); }
+  .rarity-card .rc-chars { font-size: 11px; color: var(--muted); margin-top: 6px; font-style: italic; }
+
+  /* ── CODE BLOCK ──────────────────────────────────────────── */
+  .code-block {
+    background: #0A0D16;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .code-block .cb-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .code-block .cb-filename {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--accent);
+  }
+
+  .code-block .cb-lang {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .code-block pre {
+    padding: 16px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    line-height: 1.65;
+    color: #C8D3F5;
+  }
+
+  .code-block .kw  { color: #89DDFF; }
+  .code-block .str { color: #C3E88D; }
+  .code-block .cm  { color: #546E7A; }
+  .code-block .cls { color: #FFCB6B; }
+  .code-block .num { color: #F78C6C; }
+
+  /* ── MANAGER TABLE ───────────────────────────────────────── */
+  .manager-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+  .manager-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+
+  .manager-card .mc-name {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--accent);
+    font-weight: 700;
+    margin-bottom: 4px;
+  }
+
+  .manager-card .mc-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+  .manager-card .mc-dep  { font-size: 11px; color: var(--teal); margin-top: 6px; font-family: var(--mono); }
+
+  /* ── LOOP DIAGRAM ────────────────────────────────────────── */
+  .loop-diagram {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+
+  .loop-step {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  .loop-step-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 8px 14px;
+    font-size: 13px;
+    color: var(--text);
+    flex: 1;
+    text-align: center;
+    border-left: 3px solid var(--accent);
+  }
+
+  .loop-arrow {
+    text-align: center;
+    color: var(--accent);
+    font-size: 18px;
+    line-height: 1;
+    padding: 2px 0;
+    width: 100%;
+    max-width: 400px;
+  }
+
+  /* ── MILESTONE TABLE ─────────────────────────────────────── */
+  .milestone-phase {
+    border-radius: 8px;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid var(--border);
+  }
+
+  .milestone-phase .mp-header {
+    padding: 12px 16px;
+    font-weight: 700;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .milestone-phase.m1 .mp-header { background: rgba(255,122,48,0.12); color: var(--accent); }
+  .milestone-phase.m2 .mp-header { background: rgba(61,200,184,0.10); color: var(--teal); }
+  .milestone-phase.m3 .mp-header { background: rgba(255,204,68,0.10); color: var(--gold); }
+
+  .mp-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 0;
+    border-top: 1px solid var(--border);
+    padding: 10px 16px;
+    background: var(--card);
+  }
+
+  .mp-row:hover { background: rgba(255,122,48,0.03); }
+  .mp-week { font-family: var(--mono); font-size: 11px; color: var(--muted); min-width: 60px; margin-top: 1px; }
+  .mp-task { font-size: 13px; color: var(--text); flex: 1; }
+  .mp-pri { font-family: var(--mono); font-size: 11px; padding: 1px 6px; border-radius: 10px; }
+  .mp-pri.p0 { background: rgba(255,77,106,0.15); color: var(--danger); }
+  .mp-pri.p1 { background: rgba(255,122,48,0.15); color: var(--accent); }
+  .mp-pri.p2 { background: rgba(155,163,192,0.12); color: var(--muted); }
+
+  /* ── QA CHECKLIST ────────────────────────────────────────── */
+  .qa-section { margin-bottom: 20px; }
+
+  .qa-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-radius: 6px 6px 0 0;
+    border: 1px solid var(--border);
+    border-bottom: none;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .qa-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 9px 14px;
+    border: 1px solid var(--border);
+    border-top: none;
+    background: var(--card);
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .qa-item:last-child { border-radius: 0 0 6px 6px; }
+
+  .qa-item input[type="checkbox"] {
+    accent-color: var(--accent);
+    margin-top: 2px;
+    flex-shrink: 0;
+    width: 14px;
+    height: 14px;
+    cursor: pointer;
+  }
+
+  .qa-item label { cursor: pointer; line-height: 1.4; }
+  .qa-item input:checked + label { color: var(--success); text-decoration: line-through; text-decoration-color: rgba(61,200,184,0.4); }
+
+  /* ── CURRENCY PILLS ──────────────────────────────────────── */
+  .currency-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px,1fr)); gap: 10px; margin-bottom: 16px; }
+
+  .currency-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 14px;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .cc-icon { font-size: 22px; flex-shrink: 0; }
+  .cc-name { font-size: 12px; font-weight: 700; color: var(--text); margin-bottom: 2px; }
+  .cc-desc { font-size: 11px; color: var(--muted); line-height: 1.4; }
+
+  /* ── ANALYTICS EVENT TABLE ───────────────────────────────── */
+  .event-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    background: rgba(61,200,184,0.08);
+    color: var(--teal);
+    border: 1px solid rgba(61,200,184,0.2);
+    padding: 2px 7px;
+    border-radius: 10px;
+    white-space: nowrap;
+  }
+
+  /* ── INIT ORDER ──────────────────────────────────────────── */
+  .init-flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    max-width: 420px;
+    margin-bottom: 20px;
+  }
+
+  .init-step {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .is-num {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: var(--bg);
+    font-weight: 800;
+    font-size: 11px;
+    font-family: var(--mono);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .is-name { font-family: var(--mono); font-size: 13px; color: var(--text); }
+  .is-dep  { font-size: 11px; color: var(--muted); }
+
+  .init-connector {
+    width: 1px;
+    height: 16px;
+    background: var(--border);
+    margin-left: 13px;
+  }
+
+  /* ── OVERVIEW CARDS ──────────────────────────────────────── */
+  .overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 24px; }
+
+  .ov-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 18px;
+  }
+
+  .ov-label { font-family: var(--mono); font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .ov-value { font-size: 16px; font-weight: 700; color: var(--text); }
+  .ov-note  { font-size: 12px; color: var(--muted); margin-top: 3px; }
+
+  /* ── SCROLLBAR ───────────────────────────────────────────── */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  @media (max-width: 700px) {
+    body { flex-direction: column; }
+    .nav { width: 100%; min-height: auto; height: auto; position: static; flex-direction: row; flex-wrap: wrap; padding: 8px; }
+    .nav-brand { display: none; }
+    .nav-section-label { display: none; }
+    .nav-item { padding: 6px 10px; font-size: 12px; border-left: none; border-bottom: 2px solid transparent; }
+    .nav-item.active { border-bottom-color: var(--accent); border-left: none; }
+    .section { padding: 24px 16px 48px; }
+    .overview-grid, .manager-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<!-- NAV -->
+<nav class="nav" id="nav">
+  <div class="nav-brand">
+    <div class="nav-title">Unity Dev Spec</div>
+    <div class="nav-game-name">고슴도치 배달 타이쿤</div>
+    <div class="nav-version">v1.0 · 2026-06-24</div>
+    <canvas class="hedgehog-canvas" id="hog" width="80" height="60"></canvas>
+  </div>
+
+  <div class="nav-section-label">설계 문서</div>
+  <a class="nav-item active" data-sec="overview" href="#">   <span class="nav-icon">🏠</span> 프로젝트 개요</a>
+  <a class="nav-item" data-sec="gdd"      href="#">   <span class="nav-icon">🎮</span> GDD 핵심루프</a>
+  <a class="nav-item" data-sec="chars"    href="#">   <span class="nav-icon">🦔</span> 캐릭터 시스템</a>
+  <a class="nav-item" data-sec="economy"  href="#">   <span class="nav-icon">💰</span> 경제 & 공식</a>
+  <a class="nav-item" data-sec="monetize" href="#">   <span class="nav-icon">💎</span> 수익화</a>
+  <div class="nav-section-label">기술 설계</div>
+  <a class="nav-item" data-sec="tdd"      href="#">   <span class="nav-icon">🏗️</span> TDD 아키텍처</a>
+  <a class="nav-item" data-sec="code"     href="#">   <span class="nav-icon">⌨️</span> C# 코드 구조</a>
+  <a class="nav-item" data-sec="save"     href="#">   <span class="nav-icon">💾</span> 저장 데이터</a>
+  <div class="nav-section-label">계획 & 품질</div>
+  <a class="nav-item" data-sec="analytics" href="#">  <span class="nav-icon">📊</span> Firebase 분석</a>
+  <a class="nav-item" data-sec="mvp"      href="#">   <span class="nav-icon">🗓️</span> MVP 로드맵</a>
+  <a class="nav-item" data-sec="qa"       href="#">   <span class="nav-icon">✅</span> QA 체크리스트</a>
+</nav>
+
+<!-- MAIN -->
+<main class="main" id="main">
+
+  <!-- ───────── OVERVIEW ───────── -->
+  <section class="section active" id="sec-overview">
+    <div class="page-eyebrow">Project Overview</div>
+    <h1 class="page-title">고슴도치 배달 타이쿤</h1>
+    <p class="page-sub">귀여운 고슴도치 택배원을 고용하고, 배달 허브를 업그레이드하며, 물류를 자동화해 작은 골목 배달소에서 글로벌 배달 제국을 건설하는 모바일 방치형 타이쿤 게임.</p>
+
+    <div class="overview-grid">
+      <div class="ov-card">
+        <div class="ov-label">엔진</div>
+        <div class="ov-value">Unity 6 LTS</div>
+        <div class="ov-note">C# / URP / Addressables</div>
+      </div>
+      <div class="ov-card">
+        <div class="ov-label">플랫폼</div>
+        <div class="ov-value">Android · iOS</div>
+        <div class="ov-note">Android 8.0+ / iOS 13+</div>
+      </div>
+      <div class="ov-card">
+        <div class="ov-label">장르</div>
+        <div class="ov-value">Mobile Idle Tycoon</div>
+        <div class="ov-note">Casual Simulation / Delivery Management</div>
+      </div>
+      <div class="ov-card">
+        <div class="ov-label">네임스페이스</div>
+        <div class="ov-value" style="font-size:13px;font-family:var(--mono)">HedgehogDeliveryTycoon</div>
+        <div class="ov-note">12개 서브 네임스페이스</div>
+      </div>
+      <div class="ov-card">
+        <div class="ov-label">세션 길이</div>
+        <div class="ov-value">1–5분</div>
+        <div class="ov-note">오프라인 방치 최대 8시간</div>
+      </div>
+      <div class="ov-card">
+        <div class="ov-label">MVP 기간</div>
+        <div class="ov-value">3개월 (12주)</div>
+        <div class="ov-note">프로그래머 2, 아티스트 1, 기획/QA 1</div>
+      </div>
+    </div>
+
+    <h2>핵심 설계 원칙</h2>
+    <div class="card-grid">
+      <div class="card"><div class="card-title">🔄 단순한 코어 루프</div><div class="card-desc">주문→배달→코인→업그레이드 한 사이클로 완결</div></div>
+      <div class="card"><div class="card-title">⚡ 빠른 초반 진행</div><div class="card-desc">30분 이내 첫 구역 확장 경험 제공</div></div>
+      <div class="card"><div class="card-title">🎯 자동화 우선 방치</div><div class="card-desc">모든 배달·정산은 최종 자동화 가능</div></div>
+      <div class="card"><div class="card-title">📦 데이터 주도 설계</div><div class="card-desc">ScriptableObject로 코드 수정 없이 밸런스 조정</div></div>
+      <div class="card"><div class="card-title">💰 편의 중심 과금</div><div class="card-desc">Pay-to-Win 완전 배제, 광고·패스 중심</div></div>
+      <div class="card"><div class="card-title">🔥 LiveOps 확장성</div><div class="card-desc">앱 업데이트 없이 이벤트·밸런스 수정 가능</div></div>
+    </div>
+
+    <h2>타겟 유저</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>내용</th></tr></thead>
+        <tbody>
+          <tr><td><strong>연령대</strong></td><td>13세 ~ 45세</td></tr>
+          <tr><td><strong>플레이어 타입</strong></td><td>캐주얼 게이머, 방치형 타이쿤 팬, 귀여운 캐릭터 수집가</td></tr>
+          <tr><td><strong>비교 게임</strong></td><td>캣 오피스 타이쿤, Idle Miner Tycoon, Merge & Idle</td></tr>
+          <tr><td><strong>세션 길이</strong></td><td>1~5분 적극 플레이 / 24시간 백그라운드 방치</td></tr>
+          <tr><td><strong>과금 허용도</strong></td><td>편의성 중심 소과금 ~ 중과금 (페이 투 윈 불허)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── GDD ───────── -->
+  <section class="section" id="sec-gdd">
+    <div class="page-eyebrow">Part A — Game Design Document</div>
+    <h1 class="page-title">핵심 게임플레이 설계</h1>
+    <p class="page-sub">코어 루프, 메타 루프, 주요 시설 시스템 설계</p>
+
+    <h2>코어 게임플레이 루프</h2>
+    <div class="loop-diagram">
+      <div class="loop-step"><div class="loop-step-box">📦 배달 주문 발생</div></div>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-step"><div class="loop-step-box">🦔 고슴도치 택배원이 처리</div></div>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-step"><div class="loop-step-box">💰 코인 획득</div></div>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-step"><div class="loop-step-box">🔧 시설 업그레이드</div></div>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-step"><div class="loop-step-box">📈 처리 효율 증가</div></div>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-step"><div class="loop-step-box">🗺️ 새 배달 구역 해금</div></div>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-step"><div class="loop-step-box">⭐ 더 좋은 택배원 채용</div></div>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-step"><div class="loop-step-box">🌙 오프라인 수익 증가</div></div>
+      <div class="loop-arrow">↓</div>
+      <div class="loop-step"><div class="loop-step-box">🔄 복귀 후 재투자</div></div>
+    </div>
+
+    <h2>메타 루프</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>메타 시스템</th><th>내용</th><th>주기</th></tr></thead>
+        <tbody>
+          <tr><td><strong>도시 확장</strong></td><td>골목 → 주택가 → 상업지구 → ... → 미래 도시 (10구역)</td><td>수 시간</td></tr>
+          <tr><td><strong>컬렉션 완성</strong></td><td>모든 등급 고슴도치 수집 → 영구 수익 보너스</td><td>수 일</td></tr>
+          <tr><td><strong>차량 컬렉션</strong></td><td>자전거 → 스쿠터 → 트럭 → 드론 → 로켓 배달봇</td><td>중장기</td></tr>
+          <tr><td><strong>프레스티지 리셋</strong></td><td>전체 리셋 → 프레스티지 스타 획득 → 영구 +5% 배율</td><td>20~30시간</td></tr>
+          <tr><td><strong>이벤트 랭킹</strong></td><td>2주 단위 시즌 이벤트, 특별 전설 캐릭터 보상</td><td>2주</td></tr>
+          <tr><td><strong>시즌 패스</strong></td><td>무료/유료 트랙, 30일 보상 트랙</td><td>1개월</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>주요 시설</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>시설</th><th>기능</th><th>업그레이드 효과</th><th>해금 조건</th></tr></thead>
+        <tbody>
+          <tr><td><strong>포장 테이블</strong></td><td>주문 상품 포장</td><td>포장 속도 +15%/레벨</td><td>기본 보유</td></tr>
+          <tr><td><strong>배달 가방 스테이션</strong></td><td>택배원 용량 증가</td><td>용량 +20%/레벨</td><td>허브 Lv.2</td></tr>
+          <tr><td><strong>분류 벨트</strong></td><td>주문 처리 속도·정확도</td><td>처리 속도 +10%, 오배송 -5%</td><td>허브 Lv.3</td></tr>
+          <tr><td><strong>스쿠터 도크</strong></td><td>차량 속도 및 동시 운행</td><td>이동 속도 +12%/레벨</td><td>허브 Lv.5</td></tr>
+          <tr><td><strong>배터리 충전기</strong></td><td>전동 차량 충전 효율</td><td>충전 속도 +25%/레벨</td><td>구역 2 해금</td></tr>
+          <tr><td><strong>스낵 바</strong></td><td>스낵 토큰 생산</td><td>생산 +10%/레벨</td><td>허브 Lv.4</td></tr>
+          <tr><td><strong>배차 보드</strong></td><td>자동 배차 효율</td><td>최적화 +8%/레벨</td><td>구역 3 해금</td></tr>
+          <tr><td><strong>자동 정산 데스크</strong></td><td>오프라인 시간 연장</td><td>오프라인 +1시간/5레벨</td><td>허브 Lv.8</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>통화 시스템</h2>
+    <div class="currency-grid">
+      <div class="currency-card"><div class="cc-icon">💰</div><div><div class="cc-name">코인</div><div class="cc-desc">주 통화. 시설 업그레이드, 기본 채용</div></div></div>
+      <div class="currency-card"><div class="cc-icon">💎</div><div><div class="cc-name">젬</div><div class="cc-desc">프리미엄 통화. 프리미엄 채용, 가속</div></div></div>
+      <div class="currency-card"><div class="cc-icon">🏅</div><div><div class="cc-name">배달 배지</div><div class="cc-desc">마일스톤 통화. 특별 시설 해금</div></div></div>
+      <div class="currency-card"><div class="cc-icon">🍡</div><div><div class="cc-name">스낵 토큰</div><div class="cc-desc">스낵 바 업그레이드, 버프 아이템</div></div></div>
+      <div class="currency-card"><div class="cc-icon">🔧</div><div><div class="cc-name">업그레이드 부품</div><div class="cc-desc">고급 시설 업그레이드, 차량 강화</div></div></div>
+      <div class="currency-card"><div class="cc-icon">⭐</div><div><div class="cc-name">프레스티지 스타</div><div class="cc-desc">영구 수익 배율 +5%/개. 과금 불가</div></div></div>
+    </div>
+  </section>
+
+  <!-- ───────── CHARS ───────── -->
+  <section class="section" id="sec-chars">
+    <div class="page-eyebrow">Character System</div>
+    <h1 class="page-title">고슴도치 택배원 시스템</h1>
+    <p class="page-sub">5단계 희귀도로 구성된 고슴도치 택배원 캐릭터 시스템 설계</p>
+
+    <h2>희귀도 등급 배율</h2>
+    <div class="rarity-grid">
+      <div class="rarity-card common">
+        <div class="rc-tier">Common</div>
+        <div class="rc-mult">×1.0</div>
+        <div class="rc-label">일반 (회색)</div>
+        <div class="rc-chars">쏜이, 바늘이, 고슴이</div>
+      </div>
+      <div class="rarity-card rare">
+        <div class="rc-tier">Rare</div>
+        <div class="rc-mult">×1.5</div>
+        <div class="rc-label">희귀 (파란색)</div>
+        <div class="rc-chars">스피디, 터보, 제트</div>
+      </div>
+      <div class="rarity-card epic">
+        <div class="rc-tier">Epic</div>
+        <div class="rc-mult">×2.5</div>
+        <div class="rc-label">에픽 (보라색)</div>
+        <div class="rc-chars">캡틴 바늘, 썬더</div>
+      </div>
+      <div class="rarity-card legendary">
+        <div class="rc-tier">Legendary</div>
+        <div class="rc-mult">×4.0</div>
+        <div class="rc-label">전설 (황금)</div>
+        <div class="rc-chars">알파 가시, 드래곤</div>
+      </div>
+      <div class="rarity-card mythic">
+        <div class="rc-tier">Mythic</div>
+        <div class="rc-mult">×7.0</div>
+        <div class="rc-label">신화 (무지개)</div>
+        <div class="rc-chars">우주 배달러, 고슴 신</div>
+      </div>
+    </div>
+
+    <h2>채용 확률</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>등급</th><th>프리미엄 확률</th><th>해금 방법</th><th>10연 보장</th></tr></thead>
+        <tbody>
+          <tr><td><span class="rarity common">Common</span></td><td style="font-variant-numeric:tabular-nums">65.0%</td><td>기본/프리미엄 채용</td><td>—</td></tr>
+          <tr><td><span class="rarity rare">Rare</span></td><td style="font-variant-numeric:tabular-nums">25.0%</td><td>기본 10%, 스낵 교환</td><td>✓ 희귀 이상 1개 보장</td></tr>
+          <tr><td><span class="rarity epic">Epic</span></td><td style="font-variant-numeric:tabular-nums">8.0%</td><td>프리미엄 채용, 이벤트</td><td>—</td></tr>
+          <tr><td><span class="rarity legendary">Legendary</span></td><td style="font-variant-numeric:tabular-nums">1.9%</td><td>전설 소환, 조각 100개</td><td>—</td></tr>
+          <tr><td><span class="rarity mythic">Mythic</span></td><td style="font-variant-numeric:tabular-nums">0.1%</td><td>신화 이벤트, 합성</td><td>—</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>택배원 효율 공식</h2>
+    <div class="formula-card">
+      <div class="fc-number">Formula 03</div>
+      <div class="fc-name">택배원 효율 (Courier Efficiency)</div>
+      <code>efficiency = baseSpeed × rarityMultiplier × levelMultiplier × vehicleBonus
+
+levelMultiplier = levelStatGrowthRate ^ (level - 1)</code>
+      <div class="fc-note">구현: <code style="background:rgba(255,122,48,0.1);color:var(--accent)">EconomyCalculator.CalculateCourierEfficiency()</code></div>
+    </div>
+
+    <h2>캐릭터 스킬 예시</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>등급</th><th>스킬명</th><th>효과</th><th>발동 조건</th></tr></thead>
+        <tbody>
+          <tr><td><span class="rarity rare">Rare</span></td><td>빠른 배달</td><td>특정 구역 속도 +20%</td><td>패시브 항시</td></tr>
+          <tr><td><span class="rarity epic">Epic</span></td><td>골드 박스</td><td>수익 +50% 확률 발동</td><td>배달 완료 시 30%</td></tr>
+          <tr><td><span class="rarity legendary">Legendary</span></td><td>황금 배달</td><td>수익 ×2 for 60초</td><td>5분마다 1회</td></tr>
+          <tr><td><span class="rarity mythic">Mythic</span></td><td>타임 루프</td><td>오프라인 시간 ×2 계산</td><td>패시브 항시</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── ECONOMY ───────── -->
+  <section class="section" id="sec-economy">
+    <div class="page-eyebrow">Part F — Economy Formulas</div>
+    <h1 class="page-title">경제 설계 및 수식</h1>
+    <p class="page-sub">모든 수식 구현 위치: <code style="color:var(--teal)">Assets/_Project/Scripts/Economy/EconomyCalculator.cs</code></p>
+
+    <div class="formula-card">
+      <div class="fc-number">Formula 01</div>
+      <div class="fc-name">시설 업그레이드 비용</div>
+      <code>cost(level) = baseCost × pow(costGrowthRate, currentLevel)</code>
+      <div class="fc-note">기본값: baseCost=100, growthRate=1.15 / 구현: <code style="color:var(--accent)">CalculateFacilityUpgradeCost()</code></div>
+    </div>
+
+    <div class="formula-card">
+      <div class="fc-number">Formula 02</div>
+      <div class="fc-name">시설 수익 (초당)</div>
+      <code>revenue(level) = baseRevenue × pow(revenueGrowthRate, level - 1)</code>
+      <div class="fc-note">기본값: baseRevenue=10, growthRate=1.10 / 구현: <code style="color:var(--accent)">CalculateFacilityRevenue()</code></div>
+    </div>
+
+    <div class="formula-card">
+      <div class="fc-number">Formula 04</div>
+      <div class="fc-name">배달 수익</div>
+      <code>deliveryRevenue = baseOrderValue
+             × zoneMultiplier
+             × facilityMultiplier
+             × courierBonus
+             × prestigeMultiplier</code>
+      <div class="fc-note">구현: <code style="color:var(--accent)">CalculateDeliveryRevenue()</code></div>
+    </div>
+
+    <div class="formula-card">
+      <div class="fc-number">Formula 05</div>
+      <div class="fc-name">오프라인 보상</div>
+      <code>offlineSeconds = currentUtc - lastLoginUtc
+cappedSeconds  = min(offlineSeconds, offlineMaxHours × 3600)
+offlineReward  = avgRevenuePerSecond × cappedSeconds × efficiencyRate</code>
+      <div class="fc-note">기본값: maxHours=8, efficiencyRate=0.5 / 구현: <code style="color:var(--accent)">OfflineRewardManager.CalculateOfflineReward()</code></div>
+    </div>
+
+    <div class="formula-card">
+      <div class="fc-number">Formula 06</div>
+      <div class="fc-name">광고 보상 배율</div>
+      <code>finalReward = baseReward × rewardedAdMultiplier  // 기본 ×3.0</code>
+      <div class="fc-note">구현: <code style="color:var(--accent)">EconomyCalculator.ApplyAdMultiplier()</code></div>
+    </div>
+
+    <h2>구역 해금 비용 테이블</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>구역</th><th>이름</th><th>해금 비용 (코인)</th><th>구역 수익 배율</th></tr></thead>
+        <tbody>
+          <tr><td style="font-variant-numeric:tabular-nums">0</td><td>골목 배달소</td><td>0</td><td>×1.0</td></tr>
+          <tr><td>1</td><td>주택가</td><td>10,000</td><td>×2.0</td></tr>
+          <tr><td>2</td><td>상업지구</td><td>30,000</td><td>×4.0</td></tr>
+          <tr><td>3</td><td>산업단지</td><td>90,000</td><td>×8.0</td></tr>
+          <tr><td>4</td><td>신도시</td><td>270,000</td><td>×16.0</td></tr>
+          <tr><td>5</td><td>도심</td><td>810,000</td><td>×30.0</td></tr>
+          <tr><td>6</td><td>항구</td><td>2,430,000</td><td>×55.0</td></tr>
+          <tr><td>7</td><td>공항</td><td>7,290,000</td><td>×100.0</td></tr>
+          <tr><td>8</td><td>글로벌 허브</td><td>21,870,000</td><td>×200.0</td></tr>
+          <tr><td>9</td><td>미래 도시</td><td>65,610,000</td><td>×400.0</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── MONETIZE ───────── -->
+  <section class="section" id="sec-monetize">
+    <div class="page-eyebrow">Part A-9 — Monetization</div>
+    <h1 class="page-title">수익화 설계</h1>
+    <p class="page-sub">편의성 중심 과금. Pay-to-Win 완전 배제.</p>
+
+    <h2>IAP 상품 목록</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>상품명</th><th>가격</th><th>포함 내용</th><th>구매 동기</th><th>균형 주의</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><strong>광고 제거 (No Ads)</strong></td>
+            <td>₩3,900</td>
+            <td>전면 광고 영구 제거 + 젬 50</td>
+            <td>광고 없는 쾌적한 플레이</td>
+            <td>보상형 광고는 유지</td>
+          </tr>
+          <tr>
+            <td><strong>스타터 팩</strong> <span style="font-size:11px;color:var(--accent)">(1회 한정)</span></td>
+            <td>₩1,900</td>
+            <td>젬 200 + 코인 50,000 + 희귀 택배원</td>
+            <td>초반 진행 가속</td>
+            <td>게임 시작 3일 이내만 표시</td>
+          </tr>
+          <tr>
+            <td><strong>성장 팩</strong></td>
+            <td>₩9,900</td>
+            <td>젬 500 + 업그레이드 부품 100 + 에픽 채용권 3</td>
+            <td>중반 정체기 돌파</td>
+            <td>월 1회 권장</td>
+          </tr>
+          <tr>
+            <td><strong>전설 택배원 팩</strong></td>
+            <td>₩19,900</td>
+            <td>전설 택배원 1마리 보장 + 젬 300 + 조각 50</td>
+            <td>강력한 캐릭터 즉시 획득</td>
+            <td>인게임 확률 0.5%로도 획득 가능</td>
+          </tr>
+          <tr>
+            <td><strong>월간 패스</strong></td>
+            <td>₩4,900/월</td>
+            <td>30일 매일 젬 50 + 스낵 토큰 20</td>
+            <td>꾸준한 플레이어 가성비</td>
+            <td>해지 시 즉시 중단</td>
+          </tr>
+          <tr>
+            <td><strong>시즌 패스</strong></td>
+            <td>₩9,900/시즌</td>
+            <td>유료 트랙 + 독점 전설 택배원 + 차량 스킨</td>
+            <td>독점 콘텐츠 및 시즌 강화</td>
+            <td>무료 트랙도 충분히 즐길 수 있도록</td>
+          </tr>
+          <tr>
+            <td><strong>VIP 멤버십</strong></td>
+            <td>₩14,900/월</td>
+            <td>광고 제거 + 젬 100/일 + 전용 배지</td>
+            <td>최고의 편의성 패키지</td>
+            <td>VIP 수익 배율 최대 ×1.5 이하</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>광고 설계</h2>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-title">🎬 보상형 광고</div>
+        <div class="card-desc">오프라인 보상 ×3, 배달 수익 ×3, 스낵 토큰 추가. 쿨타임 10분. 광고 피로도 방지 필수.</div>
+      </div>
+      <div class="card">
+        <div class="card-title">📺 전면 광고</div>
+        <div class="card-desc">구역 잠금 해제 시, 5분 자연 중단점. 최대 2회/시간. No Ads 구매 시 완전 비활성화.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ───────── TDD ───────── -->
+  <section class="section" id="sec-tdd">
+    <div class="page-eyebrow">Part B — Technical Design Document</div>
+    <h1 class="page-title">Unity 기술 아키텍처</h1>
+    <p class="page-sub">ServiceLocator 패턴 기반 매니저 시스템. 데이터 주도 ScriptableObject 설계.</p>
+
+    <h2>매니저 초기화 순서</h2>
+    <div class="init-flow">
+      <div class="init-step"><div class="is-num">1</div><div><div class="is-name">ServiceLocator</div><div class="is-dep">모든 매니저 등록 레지스트리</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">2</div><div><div class="is-name">DataManager</div><div class="is-dep">ScriptableObject 캐싱</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">3</div><div><div class="is-name">SaveManager</div><div class="is-dep">JSON 로드 + 버전 마이그레이션</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">4</div><div><div class="is-name">EconomyManager</div><div class="is-dep">통화 잔액 초기화</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">5</div><div><div class="is-name">FacilityManager</div><div class="is-dep">시설 인스턴스 복원</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">6</div><div><div class="is-name">CharacterManager</div><div class="is-dep">택배원 컬렉션 복원</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">7</div><div><div class="is-name">VehicleManager</div><div class="is-dep">차량 상태 복원</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">8</div><div><div class="is-name">DeliveryManager</div><div class="is-dep">주문 생성 코루틴 시작</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">9</div><div><div class="is-name">OfflineRewardManager</div><div class="is-dep">오프라인 보상 계산</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">10</div><div><div class="is-name">UIManager → MainHub 열기</div><div class="is-dep">오프라인 보상 팝업 트리거</div></div></div>
+      <div class="init-connector"></div>
+      <div class="init-step"><div class="is-num">11</div><div><div class="is-name">AnalyticsManager</div><div class="is-dep">session_start 이벤트 전송</div></div></div>
+    </div>
+
+    <h2>매니저 역할 요약</h2>
+    <div class="manager-grid">
+      <div class="manager-card"><div class="mc-name">GameManager</div><div class="mc-desc">게임 생명주기, 씬 전환, 앱 일시정지 처리</div><div class="mc-dep">→ 모든 매니저 (최상위)</div></div>
+      <div class="manager-card"><div class="mc-name">DataManager</div><div class="mc-desc">ScriptableObject 정적 데이터 캐싱 및 접근</div><div class="mc-dep">→ 의존성 없음</div></div>
+      <div class="manager-card"><div class="mc-name">SaveManager</div><div class="mc-desc">AES-128 암호화 JSON 저장/로드, 30초 자동 저장</div><div class="mc-dep">→ DataManager</div></div>
+      <div class="manager-card"><div class="mc-name">EconomyManager</div><div class="mc-desc">통화 잔액 관리, 수입/지출, 이벤트 발행</div><div class="mc-dep">→ SaveManager</div></div>
+      <div class="manager-card"><div class="mc-name">DeliveryManager</div><div class="mc-desc">주문 생성 루프, 배차, 수익 계산 및 지급</div><div class="mc-dep">→ Economy + Character + Facility</div></div>
+      <div class="manager-card"><div class="mc-name">FacilityManager</div><div class="mc-desc">시설 업그레이드 처리, 효과 배율 계산</div><div class="mc-dep">→ Economy + DataManager</div></div>
+      <div class="manager-card"><div class="mc-name">CharacterManager</div><div class="mc-desc">채용 뽑기, 배치 관리, 레벨업 처리</div><div class="mc-dep">→ Economy + DataManager</div></div>
+      <div class="manager-card"><div class="mc-name">OfflineRewardManager</div><div class="mc-desc">오프라인 시간 계산, 보상 지급, 팝업 트리거</div><div class="mc-dep">→ Economy + Delivery</div></div>
+      <div class="manager-card"><div class="mc-name">UIManager</div><div class="mc-desc">패널 열기/닫기, 뒤로가기 스택, HUD 업데이트</div><div class="mc-dep">→ 모든 View 클래스</div></div>
+      <div class="manager-card"><div class="mc-name">AdManager</div><div class="mc-desc">IRewardedAdProvider 추상화, 쿨타임 관리</div><div class="mc-dep">→ AdMob/MAX SDK</div></div>
+      <div class="manager-card"><div class="mc-name">IAPManager</div><div class="mc-desc">Unity IAP 연동, 보상 지급, 구매 복구</div><div class="mc-dep">→ Economy + SaveManager</div></div>
+      <div class="manager-card"><div class="mc-name">AnalyticsManager</div><div class="mc-desc">Firebase Analytics 이벤트 단일 진입점</div><div class="mc-dep">→ Firebase SDK</div></div>
+    </div>
+
+    <h2>씬 구조</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>씬</th><th>책임</th><th>주요 오브젝트</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><code>BootScene</code></td>
+            <td>최초 진입점. 모든 매니저 초기화 순서 보장.</td>
+            <td>[BootController], [ServiceLocator]</td>
+          </tr>
+          <tr>
+            <td><code>LoadingScene</code></td>
+            <td>Addressables 로드, 에셋 프리로드, 로딩 UI</td>
+            <td>[LoadingUI], [AssetPreloader]</td>
+          </tr>
+          <tr>
+            <td><code>MainGameScene</code></td>
+            <td>핵심 게임플레이 전체. UI 패널 전환으로 모든 화면 처리.</td>
+            <td>[GameLoop], [UIRoot], [HubRenderer]</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── CODE ───────── -->
+  <section class="section" id="sec-code">
+    <div class="page-eyebrow">Part C — C# Code Skeleton</div>
+    <h1 class="page-title">C# 코드 구조</h1>
+    <p class="page-sub">25개 스크립트 파일. 네임스페이스: <code style="color:var(--teal)">HedgehogDeliveryTycoon.*</code></p>
+
+    <h2>파일 목록</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>파일</th><th>네임스페이스</th><th>역할</th></tr></thead>
+        <tbody>
+          <tr><td><code>GameManager.cs</code></td><td>Core</td><td>게임 생명주기, 씬 전환, 앱 pause/resume</td></tr>
+          <tr><td><code>ServiceLocator.cs</code></td><td>Core</td><td>전역 서비스 레지스트리 (DI 대체)</td></tr>
+          <tr><td><code>IService.cs</code></td><td>Core</td><td>모든 매니저의 공통 인터페이스</td></tr>
+          <tr><td><code>GameConstants.cs</code></td><td>Core</td><td>전역 상수 (저장 버전, 캡값, 쿨타임 등)</td></tr>
+          <tr><td><code>HedgehogData.cs</code></td><td>Data</td><td>캐릭터 정적 데이터 ScriptableObject</td></tr>
+          <tr><td><code>FacilityData.cs</code></td><td>Data</td><td>시설 정적 데이터 ScriptableObject</td></tr>
+          <tr><td><code>VehicleData.cs</code></td><td>Data</td><td>차량 정적 데이터 ScriptableObject</td></tr>
+          <tr><td><code>EconomyConfig.cs</code></td><td>Data</td><td>경제 밸런스 설정 ScriptableObject</td></tr>
+          <tr><td><code>DeliveryZoneData.cs</code></td><td>Data</td><td>배달 구역 정적 데이터 ScriptableObject</td></tr>
+          <tr><td><code>DataManager.cs</code></td><td>Data</td><td>모든 SO 캐싱 및 접근 매니저</td></tr>
+          <tr><td><code>SaveData.cs</code></td><td>Save</td><td>루트 저장 데이터 모델 (JSON 대상)</td></tr>
+          <tr><td><code>SaveManager.cs</code></td><td>Save</td><td>AES-128 암호화 로컬 저장/로드</td></tr>
+          <tr><td><code>CurrencyType.cs</code></td><td>Economy</td><td>8종 통화 열거형</td></tr>
+          <tr><td><code>EconomyManager.cs</code></td><td>Economy</td><td>통화 잔액 CRUD, 이벤트 발행</td></tr>
+          <tr><td><code>EconomyCalculator.cs</code></td><td>Economy</td><td>모든 경제 수식 정적 유틸리티</td></tr>
+          <tr><td><code>HedgehogRarity.cs</code></td><td>Characters</td><td>희귀도 열거형 (5단계)</td></tr>
+          <tr><td><code>HedgehogCharacter.cs</code></td><td>Characters</td><td>런타임 캐릭터 인스턴스</td></tr>
+          <tr><td><code>CharacterManager.cs</code></td><td>Characters</td><td>채용/배치/레벨업 매니저</td></tr>
+          <tr><td><code>FacilityType.cs</code></td><td>Facilities</td><td>11종 시설 열거형</td></tr>
+          <tr><td><code>FacilityInstance.cs</code></td><td>Facilities</td><td>런타임 시설 인스턴스</td></tr>
+          <tr><td><code>FacilityManager.cs</code></td><td>Facilities</td><td>업그레이드/해금/효과 계산 매니저</td></tr>
+          <tr><td><code>DeliveryOrder.cs</code></td><td>Delivery</td><td>단일 배달 주문 데이터 모델</td></tr>
+          <tr><td><code>DeliveryManager.cs</code></td><td>Delivery</td><td>주문 생성/배차/완료 코루틴 루프</td></tr>
+          <tr><td><code>OfflineRewardManager.cs</code></td><td>Offline</td><td>오프라인 시간 계산, 보상 지급</td></tr>
+          <tr><td><code>UIView.cs</code></td><td>UI</td><td>모든 UI 패널의 기본 추상 클래스</td></tr>
+          <tr><td><code>UIManager.cs</code></td><td>UI</td><td>패널 스택, 열기/닫기, HUD</td></tr>
+          <tr><td><code>MainHubView.cs</code></td><td>UI</td><td>메인 화면: 코인 HUD, 탭바</td></tr>
+          <tr><td><code>FacilityUpgradeView.cs</code></td><td>UI</td><td>시설 업그레이드 팝업 (×1/×10/×MAX)</td></tr>
+          <tr><td><code>OfflineRewardPopup.cs</code></td><td>UI</td><td>오프라인 보상 팝업 + 광고 배율</td></tr>
+          <tr><td><code>IRewardedAdProvider.cs</code></td><td>Ads</td><td>광고 SDK 추상화 인터페이스</td></tr>
+          <tr><td><code>AdManager.cs</code></td><td>Ads</td><td>보상형/전면 광고, 쿨타임 관리</td></tr>
+          <tr><td><code>ProductId.cs</code></td><td>IAP</td><td>스토어 등록 상품 ID 상수</td></tr>
+          <tr><td><code>IAPManager.cs</code></td><td>IAP</td><td>Unity IAP 연동, 보상 지급, 복구</td></tr>
+          <tr><td><code>AnalyticsEventName.cs</code></td><td>Analytics</td><td>Firebase 이벤트 이름 상수</td></tr>
+          <tr><td><code>AnalyticsManager.cs</code></td><td>Analytics</td><td>Firebase Analytics 단일 진입점</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>ServiceLocator 사용 패턴</h2>
+    <div class="code-block">
+      <div class="cb-header"><span class="cb-filename">GameManager.cs 초기화 패턴</span><span class="cb-lang">C#</span></div>
+      <pre><span class="cm">// 매니저 등록 (각 Awake()에서)</span>
+<span class="kw">private void</span> Awake() {
+    ServiceLocator.Register&lt;<span class="cls">EconomyManager</span>&gt;(<span class="kw">this</span>);
+}
+
+<span class="cm">// 어디서든 접근</span>
+<span class="kw">var</span> economy = ServiceLocator.Get&lt;<span class="cls">EconomyManager</span>&gt;();
+economy?.AddCurrency(<span class="cls">CurrencyType</span>.Coin, <span class="num">1000</span>);
+
+<span class="cm">// 시설 업그레이드 예시</span>
+<span class="kw">if</span> (ServiceLocator.Get&lt;<span class="cls">FacilityManager</span>&gt;().UpgradeFacility(<span class="cls">FacilityType</span>.PackingTable)) {
+    ServiceLocator.Get&lt;<span class="cls">AnalyticsManager</span>&gt;()
+        ?.LogEvent(<span class="cls">AnalyticsEventName</span>.FacilityUpgrade,
+            (<span class="str">"facility_type"</span>, <span class="str">"PackingTable"</span>),
+            (<span class="str">"level"</span>, level.ToString()));
+}</pre>
+    </div>
+  </section>
+
+  <!-- ───────── SAVE ───────── -->
+  <section class="section" id="sec-save">
+    <div class="page-eyebrow">Part E — Save Data Design</div>
+    <h1 class="page-title">저장 데이터 설계</h1>
+    <p class="page-sub">AES-128 암호화 JSON 로컬 저장. 버전 마이그레이션 전략 포함.</p>
+
+    <h2>저장 데이터 스키마</h2>
+    <div class="code-block">
+      <div class="cb-header"><span class="cb-filename">SaveData.cs 루트 구조</span><span class="cb-lang">JSON Schema</span></div>
+      <pre>{
+  <span class="str">"saveVersion"</span>: <span class="num">1</span>,
+  <span class="str">"playerId"</span>: <span class="str">"guid"</span>,
+  <span class="str">"createdAtUtc"</span>: <span class="str">"ISO 8601"</span>,
+  <span class="str">"lastLoginUtc"</span>: <span class="str">"ISO 8601"</span>,  <span class="cm">// 오프라인 보상 기준</span>
+  <span class="str">"totalPlayTimeSeconds"</span>: <span class="num">0.0</span>,
+
+  <span class="str">"currencies"</span>: {
+    <span class="str">"coins"</span>: <span class="num">100.0</span>,
+    <span class="str">"gems"</span>: <span class="num">0</span>,
+    <span class="str">"deliveryBadges"</span>: <span class="num">0</span>,
+    <span class="str">"snackTokens"</span>: <span class="num">0</span>,
+    <span class="str">"upgradeParts"</span>: <span class="num">0</span>
+  },
+  <span class="str">"facilities"</span>: [
+    { <span class="str">"facilityId"</span>: <span class="str">"packing_table"</span>, <span class="str">"level"</span>: <span class="num">1</span>, <span class="str">"isUnlocked"</span>: <span class="kw">true</span> }
+  ],
+  <span class="str">"characters"</span>: [
+    { <span class="str">"characterId"</span>: <span class="str">"hog_001"</span>, <span class="str">"instanceId"</span>: <span class="str">"guid"</span>, <span class="str">"level"</span>: <span class="num">1</span>,
+      <span class="str">"assignedZoneId"</span>: <span class="str">"zone_000"</span> }
+  ],
+  <span class="str">"unlockedZoneIds"</span>: [<span class="str">"zone_000_alley"</span>],
+  <span class="str">"prestigeLevel"</span>: <span class="num">0</span>,
+  <span class="str">"prestigeStars"</span>: <span class="num">0</span>,
+  <span class="str">"tutorialStep"</span>: <span class="num">0</span>,
+  <span class="str">"settings"</span>: {
+    <span class="str">"bgmEnabled"</span>: <span class="kw">true</span>, <span class="str">"noAdsOwned"</span>: <span class="kw">false</span>, <span class="str">"language"</span>: <span class="str">"ko"</span>
+  }
+}</pre>
+    </div>
+
+    <h2>저장 버전 마이그레이션 전략</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>항목</th><th>전략</th></tr></thead>
+        <tbody>
+          <tr><td><strong>버전 체크</strong></td><td><code>saveVersion != GameConstants.SaveVersion</code> → MigrateSave() 호출</td></tr>
+          <tr><td><strong>하위 호환</strong></td><td>신규 필드는 항상 기본값 초기화. 구버전 파일 로드 시 누락 필드 = 기본값</td></tr>
+          <tr><td><strong>치트 방지</strong></td><td>AES-128 암호화 + 파일 해시값 검증. 수동 수정 감지 시 백업 복원</td></tr>
+          <tr><td><strong>시간 조작 방지</strong></td><td><code>offlineSeconds &lt; 0</code> → 0 처리. 역행 감지 시 보상 없음</td></tr>
+          <tr><td><strong>클라우드 저장 (미래)</strong></td><td><code>lastLoginUtc</code> 기준으로 최신 데이터 우선. Firebase Firestore 대응 구조</td></tr>
+          <tr><td><strong>자동 저장</strong></td><td>중요 이벤트 즉시 저장 + 30초 주기 자동 저장</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── ANALYTICS ───────── -->
+  <section class="section" id="sec-analytics">
+    <div class="page-eyebrow">Part G — Firebase Analytics</div>
+    <h1 class="page-title">분석 이벤트 설계</h1>
+    <p class="page-sub">구현: <code style="color:var(--teal)">AnalyticsManager.LogEvent(eventName, params)</code></p>
+
+    <h2>이벤트 목록</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>이벤트</th><th>트리거</th><th>주요 파라미터</th><th>목적</th></tr></thead>
+        <tbody>
+          <tr>
+            <td><span class="event-badge">session_start</span></td>
+            <td>앱 실행 완료</td>
+            <td><code>player_level</code>, <code>prestige_level</code></td>
+            <td>DAU/WAU 측정, 세션 분석</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">tutorial_start</span></td>
+            <td>첫 게임 실행</td>
+            <td><code>device_model</code></td>
+            <td>신규 유저 진입</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">tutorial_complete</span></td>
+            <td>튜토리얼 완료</td>
+            <td><code>completion_time_seconds</code></td>
+            <td>튜토리얼 완료율</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">facility_upgrade</span></td>
+            <td>시설 업그레이드 완료</td>
+            <td><code>facility_type</code>, <code>level</code>, <code>cost_coins</code></td>
+            <td>시설별 업그레이드 패턴</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">courier_recruit</span></td>
+            <td>새 택배원 채용</td>
+            <td><code>rarity</code>, <code>character_id</code>, <code>recruit_type</code></td>
+            <td>채용 패턴, 수익화 기여</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">delivery_complete</span></td>
+            <td>배달 주문 완료</td>
+            <td><code>zone_id</code>, <code>revenue</code>, <code>courier_rarity</code></td>
+            <td>구역별 수익 흐름</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">offline_reward_claim</span></td>
+            <td>오프라인 보상 수령</td>
+            <td><code>reward_coins</code>, <code>offline_seconds</code>, <code>used_ad</code></td>
+            <td>오프라인 수익 규모, 광고 전환율</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">rewarded_ad_start</span></td>
+            <td>광고 시청 시작</td>
+            <td><code>placement</code></td>
+            <td>위치별 광고 노출</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">rewarded_ad_complete</span></td>
+            <td>광고 시청 완료</td>
+            <td><code>placement</code>, <code>success</code></td>
+            <td>완료율, 광고 수익</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">iap_purchase_start</span></td>
+            <td>구매 버튼 클릭</td>
+            <td><code>product_id</code>, <code>price_krw</code></td>
+            <td>구매 퍼널 진입</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">iap_purchase_complete</span></td>
+            <td>구매 및 보상 지급</td>
+            <td><code>product_id</code>, <code>value</code>, <code>currency</code></td>
+            <td>수익 추적, ARPU/ARPPU</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">city_unlock</span></td>
+            <td>새 구역 해금</td>
+            <td><code>zone_id</code>, <code>zone_index</code>, <code>total_play_time</code></td>
+            <td>진행 속도, 이탈 구간</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">prestige_reset</span></td>
+            <td>프레스티지 리셋</td>
+            <td><code>prestige_level</code>, <code>coins_at_reset</code></td>
+            <td>장기 잔존율</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">event_join</span></td>
+            <td>이벤트 첫 참여</td>
+            <td><code>event_id</code>, <code>event_type</code></td>
+            <td>이벤트 참여율</td>
+          </tr>
+          <tr>
+            <td><span class="event-badge">event_reward_claim</span></td>
+            <td>이벤트 보상 수령</td>
+            <td><code>event_id</code>, <code>reward_type</code>, <code>rank</code></td>
+            <td>참여 심도, 보상 효율</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── MVP ───────── -->
+  <section class="section" id="sec-mvp">
+    <div class="page-eyebrow">Part H — MVP Roadmap</div>
+    <h1 class="page-title">3개월 MVP 로드맵</h1>
+    <p class="page-sub">팀 구성: 프로그래머 2, 아티스트 1, 기획/QA 1 | 목표: 소프트 런칭 준비 완료</p>
+
+    <div class="milestone-phase m1">
+      <div class="mp-header">🏗️ Month 1 — 코어 아키텍처 구축 (Week 1~4)</div>
+      <div class="mp-row"><span class="mp-week">Week 1</span><span class="mp-task">Unity 프로젝트 셋업, 폴더 구조, 네임스페이스, 첫 씬</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 2</span><span class="mp-task">ServiceLocator, DataManager, SaveManager (AES 암호화 포함)</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 3</span><span class="mp-task">EconomyManager, EconomyCalculator 6개 공식 구현 및 테스트</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 4</span><span class="mp-task">FacilityManager + DeliveryManager 기본 루프 (주문→배달→코인→업그레이드)</span><span class="mp-pri p0">P0</span></div>
+    </div>
+
+    <div class="milestone-phase m2">
+      <div class="mp-header">🎮 Month 2 — 콘텐츠 및 수익화 (Week 5~8)</div>
+      <div class="mp-row"><span class="mp-week">Week 5</span><span class="mp-task">OfflineRewardManager + OfflineRewardPopup UI</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 6</span><span class="mp-task">CharacterManager (뽑기 확률 시스템) + 채용 화면</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 7</span><span class="mp-task">AdManager (AdMob 실제 연동) + IAPManager (Unity IAP 기본)</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 8</span><span class="mp-task">도시 지도 화면, 구역 해금, 임시 UI → 실제 아트 에셋 교체</span><span class="mp-pri p1">P1</span></div>
+    </div>
+
+    <div class="milestone-phase m3">
+      <div class="mp-header">🚀 Month 3 — 완성도 및 런칭 준비 (Week 9~12)</div>
+      <div class="mp-row"><span class="mp-week">Week 9</span><span class="mp-task">Firebase Analytics 20개 이벤트 완전 연동, Crashlytics 설정</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 10</span><span class="mp-task">밸런스 전체 조정 (D1 잔존율 40% 목표, 30분 첫 구역 해금)</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 11</span><span class="mp-task">QA 전수 테스트 (11개 영역 체크리스트 전 항목 Pass)</span><span class="mp-pri p0">P0</span></div>
+      <div class="mp-row"><span class="mp-week">Week 12</span><span class="mp-task">스토어 빌드 준비 + 소프트 런칭 (특정 국가 제한 배포)</span><span class="mp-pri p0">P0</span></div>
+    </div>
+
+    <h2>포스트 MVP 계획</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Phase</th><th>기간</th><th>핵심 기능</th></tr></thead>
+        <tbody>
+          <tr><td><strong>Phase 2</strong></td><td>Month 4~5</td><td>이벤트 시스템, 신화 캐릭터 3종, 구역 9~10, 시즌 패스</td></tr>
+          <tr><td><strong>Phase 3</strong></td><td>Month 6~7</td><td>길드/협동, 월드 랭킹, IP 콜라보 이벤트, Firebase A/B 테스트</td></tr>
+          <tr><td><strong>Phase 4</strong></td><td>Month 8+</td><td>개인화 오퍼링, VIP 티어 확대, OTA 에셋 업데이트</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ───────── QA ───────── -->
+  <section class="section" id="sec-qa">
+    <div class="page-eyebrow">Part I — QA Checklist</div>
+    <h1 class="page-title">QA 체크리스트</h1>
+    <p class="page-sub">MVP 출시 전 전수 통과 필수 항목. P0 버그 0개가 통과 기준.</p>
+
+    <div class="qa-section">
+      <div class="qa-header">💾 1. 저장/불러오기</div>
+      <div class="qa-item"><input type="checkbox" id="q11"><label for="q11">앱 종료 후 재실행 → 코인, 시설 레벨, 채용 캐릭터 모두 유지</label></div>
+      <div class="qa-item"><input type="checkbox" id="q12"><label for="q12">배터리 방전 후 재실행 → 마지막 저장 상태 복원</label></div>
+      <div class="qa-item"><input type="checkbox" id="q13"><label for="q13">시설 업그레이드 직후 강제 종료 → 업그레이드 결과 저장됨</label></div>
+      <div class="qa-item"><input type="checkbox" id="q14"><label for="q14">저장 버전 마이그레이션 (이전 버전 저장 파일) → 데이터 손실 없음</label></div>
+      <div class="qa-item"><input type="checkbox" id="q15"><label for="q15">저장 파일 수동 수정 후 실행 → 해시 검증 실패, 신규 시작</label></div>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-header">🌙 2. 오프라인 보상</div>
+      <div class="qa-item"><input type="checkbox" id="q21"><label for="q21">8시간 후 재진입 → offlineMaxHours 기준 상한 정확히 적용</label></div>
+      <div class="qa-item"><input type="checkbox" id="q22"><label for="q22">광고 시청 후 3배 수령 → 정확한 배율 적용</label></div>
+      <div class="qa-item"><input type="checkbox" id="q23"><label for="q23">광고 준비 안 된 상태 → 버튼 비활성화 또는 기본 수령으로 폴백</label></div>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-header">💰 3. 경제 오버플로우</div>
+      <div class="qa-item"><input type="checkbox" id="q31"><label for="q31">코인 잔액 1e18 초과 시도 → MaxCoinCap으로 캡, UI 정상 표시</label></div>
+      <div class="qa-item"><input type="checkbox" id="q32"><label for="q32">코인 부족 상태 업그레이드 시도 → 비용 부족 피드백 표시</label></div>
+      <div class="qa-item"><input type="checkbox" id="q33"><label for="q33">프레스티지 리셋 → 코인 0, 스타 +1, 젬 유지 확인</label></div>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-header">📺 4. 광고 보상</div>
+      <div class="qa-item"><input type="checkbox" id="q41"><label for="q41">보상형 광고 중간 닫기 → 보상 미지급, 기본 수령으로 폴백</label></div>
+      <div class="qa-item"><input type="checkbox" id="q42"><label for="q42">광고 쿨타임 중 버튼 탭 → 쿨타임 안내 표시</label></div>
+      <div class="qa-item"><input type="checkbox" id="q43"><label for="q43">네트워크 없는 상태 광고 요청 → 광고 없음 안내, 크래시 없음</label></div>
+      <div class="qa-item"><input type="checkbox" id="q44"><label for="q44">No Ads 구매 후 전면 광고 미표시 확인</label></div>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-header">💳 5. IAP 복구 및 검증</div>
+      <div class="qa-item"><input type="checkbox" id="q51"><label for="q51">스타터 팩 구매 후 재설치 → 비소모성 상품 복원</label></div>
+      <div class="qa-item"><input type="checkbox" id="q52"><label for="q52">구매 중 네트워크 끊김 → 영수증 재검증, 중복 지급 없음</label></div>
+      <div class="qa-item"><input type="checkbox" id="q53"><label for="q53">스타터 팩 2회 구매 시도 → 차단, 안내 메시지</label></div>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-header">📱 6. UI 스케일링</div>
+      <div class="qa-item"><input type="checkbox" id="q61"><label for="q61">16:9 화면 비율 → UI 클리핑 없음</label></div>
+      <div class="qa-item"><input type="checkbox" id="q62"><label for="q62">19.5:9 노치 폰 → 노치 영역 겹침 없음</label></div>
+      <div class="qa-item"><input type="checkbox" id="q63"><label for="q63">4:3 태블릿 → 레이아웃 정상</label></div>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-header">⚡ 7. 저사양 기기 성능</div>
+      <div class="qa-item"><input type="checkbox" id="q71"><label for="q71">RAM 2GB 기기 → 크래시 없음, 30 FPS 이상</label></div>
+      <div class="qa-item"><input type="checkbox" id="q72"><label for="q72">Android 8.0 / iOS 13 기기 → 실행 및 기본 기능 정상</label></div>
+      <div class="qa-item"><input type="checkbox" id="q73"><label for="q73">장시간 플레이(30분) 후 메모리 누수 → 증가 50MB 이하</label></div>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-header">⏰ 8. 시간 조작 방지</div>
+      <div class="qa-item"><input type="checkbox" id="q81"><label for="q81">시스템 시간 미래 설정 후 재진입 → 최대 오프라인 캡 적용</label></div>
+      <div class="qa-item"><input type="checkbox" id="q82"><label for="q82">시스템 시간 역행 (과거 설정) → offlineSeconds = 0, 보상 없음</label></div>
+    </div>
+
+    <div class="qa-section">
+      <div class="qa-header">🎓 9. 튜토리얼</div>
+      <div class="qa-item"><input type="checkbox" id="q91"><label for="q91">튜토리얼 중 앱 종료 후 재시작 → 진행된 단계부터 재개</label></div>
+      <div class="qa-item"><input type="checkbox" id="q92"><label for="q92">튜토리얼 완료 후 재표시 없음</label></div>
+    </div>
+  </section>
+
+</main>
+
+<script>
+  // ── NAV ────────────────────────────────────────────────────
+  const navItems = document.querySelectorAll('.nav-item[data-sec]');
+  const sections = document.querySelectorAll('.section');
+
+  navItems.forEach(item => {
+    item.addEventListener('click', e => {
+      e.preventDefault();
+      const sec = item.dataset.sec;
+      navItems.forEach(i => i.classList.remove('active'));
+      sections.forEach(s => s.classList.remove('active'));
+      item.classList.add('active');
+      const target = document.getElementById('sec-' + sec);
+      if (target) target.classList.add('active');
+      document.querySelector('.main').scrollTop = 0;
+    });
+  });
+
+  // ── HEDGEHOG CANVAS ────────────────────────────────────────
+  const canvas = document.getElementById('hog');
+  if (canvas) {
+    const ctx = canvas.getContext('2d');
+    let t = 0;
+
+    function drawHedgehog(t) {
+      const w = canvas.width, h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      // body bob
+      const bob = Math.sin(t * 2) * 2;
+      const cx = w / 2, cy = h / 2 + bob;
+
+      // body
+      ctx.beginPath();
+      ctx.ellipse(cx, cy + 4, 20, 14, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#4a3728';
+      ctx.fill();
+
+      // belly
+      ctx.beginPath();
+      ctx.ellipse(cx + 2, cy + 7, 12, 8, 0, 0, Math.PI * 2);
+      ctx.fillStyle = '#c8a882';
+      ctx.fill();
+
+      // spines (dynamic wave)
+      ctx.strokeStyle = '#6d5240';
+      ctx.lineWidth = 1.5;
+      for (let i = 0; i < 10; i++) {
+        const angle = -0.8 + i * 0.22 + Math.sin(t * 3 + i * 0.4) * 0.06;
+        const bx = cx + Math.cos(angle + Math.PI) * 14;
+        const by = cy + Math.sin(angle + Math.PI) * 9;
+        const ex = bx - Math.cos(angle) * (8 + Math.sin(t * 4 + i) * 2);
+        const ey = by - Math.sin(angle) * (8 + Math.sin(t * 4 + i) * 2);
+        ctx.beginPath();
+        ctx.moveTo(bx, by);
+        ctx.lineTo(ex, ey);
+        ctx.stroke();
+      }
+
+      // head
+      ctx.beginPath();
+      ctx.ellipse(cx + 16, cy, 10, 8, -0.2, 0, Math.PI * 2);
+      ctx.fillStyle = '#c8a882';
+      ctx.fill();
+
+      // eye
+      ctx.beginPath();
+      ctx.arc(cx + 21, cy - 1, 2, 0, Math.PI * 2);
+      ctx.fillStyle = '#1a0a00';
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(cx + 21.5, cy - 1.5, 0.7, 0, Math.PI * 2);
+      ctx.fillStyle = '#fff';
+      ctx.fill();
+
+      // nose
+      ctx.beginPath();
+      ctx.arc(cx + 25, cy + 2, 1.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#e87060';
+      ctx.fill();
+
+      // tiny package
+      const px = cx + 14, py = cy + 10 + Math.sin(t * 2) * 1;
+      ctx.fillStyle = '#FF7A30';
+      ctx.fillRect(px - 6, py - 4, 12, 8);
+      ctx.strokeStyle = '#FFD93D';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(px, py - 4); ctx.lineTo(px, py + 4);
+      ctx.moveTo(px - 6, py); ctx.lineTo(px + 6, py);
+      ctx.stroke();
+
+      // legs
+      ctx.strokeStyle = '#c8a882';
+      ctx.lineWidth = 2;
+      const legPhase = Math.sin(t * 4);
+      ctx.beginPath();
+      ctx.moveTo(cx - 5, cy + 14);
+      ctx.lineTo(cx - 5, cy + 20 + legPhase * 3);
+      ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(cx + 5, cy + 14);
+      ctx.lineTo(cx + 5, cy + 20 - legPhase * 3);
+      ctx.stroke();
+    }
+
+    function animate() {
+      t += 0.04;
+      drawHedgehog(t);
+      requestAnimationFrame(animate);
+    }
+    animate();
+  }
+</script>
