@@ -14,61 +14,115 @@
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 :root{
   --bg:#0C0F1A;--surface:#141828;--card:#1C2035;--border:#262D48;
-  --accent:#FF7A30;--teal:#3DC8B8;--gold:#FFCC44;--text:#F0EDE6;--muted:#8892B5;
-  --danger:#FF4D6A;
+  --accent:#FF7A30;--teal:#3DC8B8;--gold:#FFCC44;--gem:#C084FC;
+  --text:#F0EDE6;--muted:#8892B5;--danger:#FF4D6A;
 }
 html,body{background:var(--bg);color:var(--text);font-family:-apple-system,'Segoe UI',sans-serif;height:100%;overflow:hidden}
 #app{display:flex;flex-direction:column;height:100dvh;height:100vh;max-width:480px;margin:0 auto}
 
-#header{background:var(--surface);border-bottom:1px solid var(--border);padding:12px 16px;padding-top:max(env(safe-area-inset-top,12px),12px);flex-shrink:0}
-#coins-display{font-size:36px;font-weight:800;color:var(--gold);line-height:1.1;font-variant-numeric:tabular-nums;letter-spacing:-1px}
-#rps-row{display:flex;align-items:center;justify-content:space-between;margin-top:3px}
-#rps-display{font-size:13px;color:var(--muted)}
+#header{background:var(--surface);border-bottom:1px solid var(--border);padding:10px 16px;padding-top:max(env(safe-area-inset-top,10px),10px);flex-shrink:0}
+#currency-row{display:flex;align-items:baseline;gap:16px}
+#coins-display{font-size:26px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;letter-spacing:-1px}
+#gems-display{font-size:20px;font-weight:700;color:var(--gem);font-variant-numeric:tabular-nums}
+#info-row{display:flex;align-items:center;justify-content:space-between;margin-top:2px}
+#rps-display{font-size:12px;color:var(--muted)}
 #rps-display span{color:var(--teal);font-weight:700}
 #prestige-badge{font-size:11px;background:rgba(255,204,68,.12);border:1px solid rgba(255,204,68,.3);border-radius:10px;padding:2px 8px;color:var(--gold);display:none}
 
-#tap-area{flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:12px 16px 6px;position:relative;user-select:none;cursor:pointer;touch-action:manipulation}
-#hog-canvas{display:block;border-radius:50%;background:radial-gradient(circle at 38% 32%,#1e2540,#080b14);border:2px solid var(--border);box-shadow:0 4px 24px rgba(0,0,0,.5)}
-#tap-hint{margin-top:6px;font-size:12px;color:var(--muted)}
-#click-badge{position:absolute;top:10px;right:10px;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:4px 10px;font-size:12px;color:var(--accent);font-weight:700}
+#tap-area{flex-shrink:0;display:flex;align-items:center;justify-content:center;gap:14px;padding:8px 16px 6px;user-select:none;cursor:pointer;touch-action:manipulation}
+#hog-canvas{display:block;border-radius:50%;background:radial-gradient(circle at 38% 32%,#1e2540,#080b14);border:2px solid var(--border);box-shadow:0 4px 20px rgba(0,0,0,.5);flex-shrink:0}
+.tap-info{display:flex;flex-direction:column;gap:5px}
+#tap-hint{font-size:13px;color:var(--muted);line-height:1.4}
+#tap-hint strong{color:var(--accent)}
+.mul-chips{display:flex;gap:6px;flex-wrap:wrap}
+.mul-chip{font-size:10px;font-weight:700;padding:2px 7px;border-radius:8px;border:1px solid var(--border);color:var(--muted)}
+.mul-chip.zone{color:var(--teal);border-color:rgba(61,200,184,.3);background:rgba(61,200,184,.08)}
+.mul-chip.courier{color:var(--gem);border-color:rgba(192,132,252,.3);background:rgba(192,132,252,.08)}
 
-.section-label{padding:8px 16px 4px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;flex-shrink:0;background:var(--bg);display:flex;align-items:center;justify-content:space-between}
+#tab-bar{display:flex;background:var(--surface);border-bottom:1px solid var(--border);flex-shrink:0}
+.tab-btn{flex:1;background:none;border:none;border-bottom:2px solid transparent;padding:9px 0 7px;font-size:13px;color:var(--muted);font-weight:600;cursor:pointer;transition:color .15s,border-color .15s}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+.tab-content{display:none;flex-direction:column;flex:1;overflow:hidden}
+.tab-content.active{display:flex}
+.tab-scroll{flex:1;overflow-y:auto;padding:6px 10px 16px;-webkit-overflow-scrolling:touch}
+.tab-scroll::-webkit-scrollbar{width:4px}
+.tab-scroll::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+
+.section-label{padding:8px 4px 4px;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600;display:flex;align-items:center;justify-content:space-between}
 .section-label button{font-size:11px;background:none;border:1px solid var(--border);border-radius:8px;padding:3px 8px;color:var(--muted);cursor:pointer}
 
-#facility-list{flex:1;overflow-y:auto;padding:0 10px 16px;-webkit-overflow-scrolling:touch}
-#facility-list::-webkit-scrollbar{width:4px}
-#facility-list::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-
-.fac-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;padding:11px 12px;display:flex;align-items:center;gap:10px;transition:border-color .2s}
+.fac-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;padding:10px 12px;display:flex;align-items:center;gap:10px;transition:border-color .2s}
 .fac-card.affordable{border-color:rgba(255,122,48,.45)}
-.fac-emoji{font-size:26px;flex-shrink:0;width:34px;text-align:center}
+.fac-emoji{font-size:24px;flex-shrink:0;width:30px;text-align:center}
 .fac-info{flex:1;min-width:0}
-.fac-name{font-size:14px;font-weight:700;color:var(--text)}
+.fac-name{font-size:13px;font-weight:700}
 .fac-meta{font-size:11px;color:var(--muted);margin-top:1px}
-.fac-rps{font-size:12px;color:var(--teal);font-weight:600;margin-top:2px}
-.fac-btn{background:var(--accent);border:none;border-radius:8px;padding:8px 10px;color:#fff;font-weight:800;font-size:12px;cursor:pointer;flex-shrink:0;min-width:76px;text-align:center;transition:opacity .15s,transform .1s;line-height:1.3}
-.fac-btn:active{transform:scale(.94)}
-.fac-btn:disabled{background:var(--border);color:var(--muted);cursor:default}
-.fac-btn .btn-cost{display:block;font-size:11px;font-weight:600;opacity:.85}
+.fac-rps{font-size:11px;color:var(--teal);font-weight:600;margin-top:2px}
+.action-btn{background:var(--accent);border:none;border-radius:8px;padding:7px 10px;color:#fff;font-weight:800;font-size:11px;cursor:pointer;flex-shrink:0;min-width:70px;text-align:center;line-height:1.3;transition:transform .1s,opacity .15s}
+.action-btn:active{transform:scale(.93)}
+.action-btn:disabled{background:var(--border);color:var(--muted);cursor:default;transform:none}
+.action-btn .btn-cost{display:block;font-size:10px;font-weight:600;opacity:.85}
+
+.zone-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;padding:11px 12px;display:flex;align-items:center;gap:10px;transition:border-color .2s}
+.zone-card.unlocked{border-color:rgba(61,200,184,.3);background:rgba(61,200,184,.04)}
+.zone-card.affordable{border-color:rgba(255,122,48,.45)}
+.zone-emoji{font-size:24px;flex-shrink:0;width:30px;text-align:center}
+.zone-info{flex:1;min-width:0}
+.zone-name{font-size:13px;font-weight:700}
+.zone-mul{font-size:11px;color:var(--teal);font-weight:600;margin-top:2px}
+.active-badge{background:rgba(61,200,184,.12);border:1px solid rgba(61,200,184,.35);border-radius:8px;padding:3px 10px;font-size:11px;color:var(--teal);font-weight:700;flex-shrink:0}
+.zone-btn{background:var(--accent);border:none;border-radius:8px;padding:7px 10px;color:#fff;font-weight:800;font-size:11px;cursor:pointer;flex-shrink:0;min-width:70px;text-align:center;line-height:1.3;transition:transform .1s}
+.zone-btn:active{transform:scale(.93)}
+.zone-btn:disabled{background:var(--border);color:var(--muted);cursor:default;transform:none}
+.zone-btn .btn-cost{display:block;font-size:10px;font-weight:600;opacity:.85}
+
+.recruit-row{display:flex;gap:8px;padding:4px 0 10px}
+.recruit-btn{flex:1;background:var(--card);border:1px solid var(--border);border-radius:12px;padding:12px 8px;text-align:center;cursor:pointer;transition:border-color .15s,transform .1s}
+.recruit-btn:active{transform:scale(.97)}
+.recruit-btn.coin{border-color:rgba(255,122,48,.35)}
+.recruit-btn.gem{border-color:rgba(192,132,252,.35)}
+.rb-icon{font-size:22px;display:block;margin-bottom:4px}
+.rb-title{font-size:13px;font-weight:700}
+.rb-cost{font-size:12px;font-weight:700;margin-top:3px}
+.recruit-btn.coin .rb-cost{color:var(--gold)}
+.recruit-btn.gem .rb-cost{color:var(--gem)}
+.rb-sub{font-size:10px;color:var(--muted);margin-top:2px}
+
+.courier-card{background:var(--card);border:1px solid var(--border);border-radius:10px;margin-bottom:7px;padding:10px 12px;display:flex;align-items:center;gap:10px}
+.courier-icon{font-size:22px;flex-shrink:0;width:28px;text-align:center}
+.courier-info{flex:1;min-width:0}
+.courier-name{font-size:13px;font-weight:700}
+.courier-bonus{font-size:11px;color:var(--teal);font-weight:600;margin-top:2px}
+.rarity-badge{padding:2px 8px;border-radius:8px;font-size:10px;font-weight:700;flex-shrink:0}
+.empty-state{text-align:center;padding:36px 20px;color:var(--muted)}
+.empty-state .es-icon{font-size:38px;margin-bottom:8px}
+.empty-state p{font-size:13px;line-height:1.5}
 
 .particle{position:fixed;pointer-events:none;font-weight:800;color:var(--gold);font-size:15px;z-index:999;animation:floatUp .85s ease-out forwards}
 @keyframes floatUp{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-72px) scale(1.3)}}
 
-#offline-overlay,#prestige-overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:200;padding:24px}
-#offline-overlay.show,#prestige-overlay.show{display:flex}
-#offline-popup,#prestige-popup{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:28px 22px;width:100%;max-width:340px;text-align:center}
-#offline-popup h2,#prestige-popup h2{font-size:22px;font-weight:800;margin-bottom:6px}
-#prestige-popup h2{color:var(--gold)}
-#prestige-popup{border-color:rgba(255,204,68,.3)}
-.ot,.pres-desc{font-size:13px;color:var(--muted);margin-bottom:14px}
-.reward-coin{font-size:40px;font-weight:800;color:var(--gold);margin-bottom:4px;font-variant-numeric:tabular-nums}
-.reward-sub{font-size:12px;color:var(--muted);margin-bottom:22px}
-.claim-btn{width:100%;background:var(--accent);border:none;border-radius:12px;padding:14px;color:#fff;font-size:16px;font-weight:800;cursor:pointer}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;z-index:200;padding:24px}
+.overlay.show{display:flex}
+.popup{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:26px 22px;width:100%;max-width:340px;text-align:center}
+.popup h2{font-size:22px;font-weight:800;margin-bottom:6px}
+.popup .sub{font-size:13px;color:var(--muted);margin-bottom:14px}
+.reward-num{font-size:38px;font-weight:800;color:var(--gold);margin-bottom:4px;font-variant-numeric:tabular-nums}
+.reward-sub{font-size:12px;color:var(--muted);margin-bottom:20px}
+.big-btn{width:100%;background:var(--accent);border:none;border-radius:12px;padding:14px;color:#fff;font-size:16px;font-weight:800;cursor:pointer}
 .pres-bonus{font-size:20px;font-weight:800;color:var(--teal);margin:12px 0}
 .pres-warn{font-size:12px;color:var(--danger);margin-bottom:20px}
-.pres-btns{display:flex;gap:10px}
-.pres-cancel{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer}
-.pres-confirm{flex:1;background:var(--gold);border:none;border-radius:12px;padding:12px;color:#1a0a00;font-size:14px;font-weight:800;cursor:pointer}
+.btn-row{display:flex;gap:10px}
+.cancel-btn{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;color:var(--muted);font-size:14px;font-weight:700;cursor:pointer}
+.confirm-btn{flex:1;background:var(--gold);border:none;border-radius:12px;padding:12px;color:#1a0a00;font-size:14px;font-weight:800;cursor:pointer}
+#prestige-popup{border-color:rgba(255,204,68,.3)}
+#prestige-popup h2{color:var(--gold)}
+
+.rr-card{border-radius:14px;padding:20px;margin:12px 0}
+.rr-emoji{font-size:52px}
+.rr-rarity{font-size:13px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;margin-top:8px}
+.rr-name{font-size:22px;font-weight:800;margin-top:4px}
+.rr-bonus{font-size:14px;color:var(--teal);font-weight:600;margin-top:4px}
 
 #toast{position:fixed;top:16px;left:50%;transform:translateX(-50%) translateY(-90px);background:var(--surface);border:1px solid var(--accent);border-radius:20px;padding:8px 18px;font-size:13px;font-weight:600;color:var(--text);z-index:300;transition:transform .28s cubic-bezier(.34,1.56,.64,1);white-space:nowrap;pointer-events:none}
 #toast.show{transform:translateX(-50%) translateY(0)}
@@ -77,46 +131,106 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,'Sego
 <body>
 <div id="app">
   <div id="header">
-    <div id="coins-display">💰 <span id="coin-val">10</span></div>
-    <div id="rps-row">
+    <div id="currency-row">
+      <div id="coins-display">💰 <span id="coin-val">10</span></div>
+      <div id="gems-display">💎 <span id="gem-val">50</span></div>
+    </div>
+    <div id="info-row">
       <div id="rps-display">초당 <span id="rps-val">0.0</span> 코인</div>
       <div id="prestige-badge">⭐ <span id="prestige-val">0</span>회 프레스티지</div>
     </div>
   </div>
 
   <div id="tap-area" ontouchstart="onTap(event)" onclick="onTap(event)">
-    <div id="click-badge">탭 +<span id="click-pow">1</span></div>
-    <canvas id="hog-canvas" width="130" height="130"></canvas>
-    <div id="tap-hint">🦔 탭해서 배달!</div>
-  </div>
-
-  <div class="section-label">
-    <span>시설 업그레이드</span>
-    <button onclick="showPrestige()">⭐ 프레스티지</button>
-  </div>
-  <div id="facility-list"></div>
-</div>
-
-<div id="offline-overlay">
-  <div id="offline-popup">
-    <h2>🌙 오프라인 보상!</h2>
-    <p class="ot" id="offline-time-text"></p>
-    <div class="reward-coin">💰 <span id="offline-reward-val">0</span></div>
-    <p class="reward-sub">배달이 계속됐어요</p>
-    <button class="claim-btn" onclick="claimOffline()">받기 🎉</button>
-  </div>
-</div>
-
-<div id="prestige-overlay">
-  <div id="prestige-popup">
-    <h2>⭐ 프레스티지 리셋</h2>
-    <p class="pres-desc">모든 코인과 시설이 초기화됩니다.</p>
-    <div class="pres-bonus">수익 보너스 +<span id="pres-bonus-val">5</span>% 영구 적용</div>
-    <p class="pres-warn">⚠️ 현재 코인과 시설 레벨이 모두 0으로 돌아갑니다</p>
-    <div class="pres-btns">
-      <button class="pres-cancel" onclick="closePrestige()">취소</button>
-      <button class="pres-confirm" onclick="doPrestige()">리셋하기</button>
+    <canvas id="hog-canvas" width="110" height="110"></canvas>
+    <div class="tap-info">
+      <div id="tap-hint">🦔 탭해서 배달!<br><strong>+<span id="click-pow">1</span>/탭</strong></div>
+      <div class="mul-chips">
+        <span class="mul-chip zone">구역×<span id="zone-mul-val">1.0</span></span>
+        <span class="mul-chip courier">택배원×<span id="courier-mul-val">1.00</span></span>
+      </div>
     </div>
+  </div>
+
+  <div id="tab-bar">
+    <button class="tab-btn active" onclick="switchTab('fac')">📦 시설</button>
+    <button class="tab-btn" onclick="switchTab('zone')">🗺️ 구역</button>
+    <button class="tab-btn" onclick="switchTab('courier')">🦔 택배원</button>
+  </div>
+
+  <div id="tab-fac" class="tab-content active">
+    <div class="tab-scroll">
+      <div class="section-label">
+        <span>시설 업그레이드</span>
+        <button onclick="showPrestige()">⭐ 프레스티지</button>
+      </div>
+      <div id="facility-list"></div>
+    </div>
+  </div>
+
+  <div id="tab-zone" class="tab-content">
+    <div class="tab-scroll">
+      <div class="section-label"><span>배달 구역 — 구역 합산 배율 적용</span></div>
+      <div id="zone-list"></div>
+    </div>
+  </div>
+
+  <div id="tab-courier" class="tab-content">
+    <div class="tab-scroll">
+      <div class="section-label"><span>택배원 모집</span></div>
+      <div class="recruit-row">
+        <button class="recruit-btn coin" onclick="recruitBasic()">
+          <span class="rb-icon">📦</span>
+          <div class="rb-title">일반 모집</div>
+          <div class="rb-cost">💰 500</div>
+          <div class="rb-sub">일반~전설 등급</div>
+        </button>
+        <button class="recruit-btn gem" onclick="recruitPremium()">
+          <span class="rb-icon">💎</span>
+          <div class="rb-title">프리미엄 모집</div>
+          <div class="rb-cost">💎 300</div>
+          <div class="rb-sub">희귀~신화 등급</div>
+        </button>
+      </div>
+      <div class="section-label"><span>보유 택배원 <span id="courier-count">0</span>명</span></div>
+      <div id="courier-list"></div>
+    </div>
+  </div>
+</div>
+
+<div id="offline-overlay" class="overlay">
+  <div class="popup">
+    <h2>🌙 오프라인 보상!</h2>
+    <p class="sub" id="offline-time-text"></p>
+    <div class="reward-num">💰 <span id="offline-reward-val">0</span></div>
+    <p class="reward-sub">배달이 계속됐어요</p>
+    <button class="big-btn" onclick="claimOffline()">받기 🎉</button>
+  </div>
+</div>
+
+<div id="prestige-overlay" class="overlay">
+  <div class="popup" id="prestige-popup">
+    <h2>⭐ 프레스티지 리셋</h2>
+    <p class="sub">코인·시설·구역 초기화<br>택배원과 💎젬은 유지됩니다</p>
+    <div class="pres-bonus">수익 보너스 +<span id="pres-bonus-val">5</span>% 영구 적용</div>
+    <p class="pres-warn">⚠️ 현재 코인과 시설 레벨이 0으로 초기화됩니다</p>
+    <div class="btn-row">
+      <button class="cancel-btn" onclick="closePrestige()">취소</button>
+      <button class="confirm-btn" onclick="doPrestige()">리셋하기</button>
+    </div>
+  </div>
+</div>
+
+<div id="recruit-overlay" class="overlay" onclick="closeRecruit()">
+  <div class="popup" onclick="event.stopPropagation()">
+    <h2>🎉 새 택배원 영입!</h2>
+    <div class="rr-card" id="rr-card">
+      <div class="rr-emoji" id="rr-emoji">🦔</div>
+      <div class="rr-rarity" id="rr-rarity">일반</div>
+      <div class="rr-name" id="rr-name">쏜이</div>
+      <div class="rr-bonus" id="rr-bonus">+2% 수익 보너스</div>
+    </div>
+    <button class="big-btn" onclick="closeRecruit()">배달 출발! 🚀</button>
   </div>
 </div>
 
@@ -124,30 +238,67 @@ html,body{background:var(--bg);color:var(--text);font-family:-apple-system,'Sego
 
 <script>
 const FAC=[
-  {id:'packing', name:'포장 테이블',    emoji:'📦',baseCost:15,     baseRPS:.1,   cMul:1.15,rMul:1.10},
-  {id:'bag',     name:'배달 가방',      emoji:'🎒',baseCost:110,    baseRPS:.5,   cMul:1.15,rMul:1.10},
-  {id:'belt',    name:'분류 벨트',      emoji:'⚙️',baseCost:1200,   baseRPS:4,    cMul:1.15,rMul:1.10},
-  {id:'scooter', name:'스쿠터 도크',    emoji:'🛵',baseCost:13000,  baseRPS:28,   cMul:1.15,rMul:1.10},
-  {id:'battery', name:'배터리 충전기',  emoji:'🔋',baseCost:140000, baseRPS:200,  cMul:1.15,rMul:1.10},
-  {id:'snackbar',name:'스낵 바',        emoji:'🍡',baseCost:1.5e6,  baseRPS:1400, cMul:1.15,rMul:1.10},
-  {id:'dispatch',name:'배차 보드',      emoji:'📋',baseCost:2e7,    baseRPS:10000,cMul:1.15,rMul:1.10},
-  {id:'auto',    name:'자동 정산 데스크',emoji:'🤖',baseCost:3.5e8, baseRPS:80000,cMul:1.15,rMul:1.10},
+  {id:'packing', name:'포장 테이블',     emoji:'📦',baseCost:15,     baseRPS:.1,   cMul:1.15,rMul:1.10},
+  {id:'bag',     name:'배달 가방',       emoji:'🎒',baseCost:110,    baseRPS:.5,   cMul:1.15,rMul:1.10},
+  {id:'belt',    name:'분류 벨트',       emoji:'⚙️',baseCost:1200,   baseRPS:4,    cMul:1.15,rMul:1.10},
+  {id:'scooter', name:'스쿠터 도크',     emoji:'🛵',baseCost:13000,  baseRPS:28,   cMul:1.15,rMul:1.10},
+  {id:'battery', name:'배터리 충전기',   emoji:'🔋',baseCost:140000, baseRPS:200,  cMul:1.15,rMul:1.10},
+  {id:'snackbar',name:'스낵 바',         emoji:'🍡',baseCost:1.5e6,  baseRPS:1400, cMul:1.15,rMul:1.10},
+  {id:'dispatch',name:'배차 보드',       emoji:'📋',baseCost:2e7,    baseRPS:10000,cMul:1.15,rMul:1.10},
+  {id:'auto',    name:'자동 정산 데스크',emoji:'🤖',baseCost:3.5e8,  baseRPS:80000,cMul:1.15,rMul:1.10},
 ];
+const ZONES=[
+  {id:'alley',       name:'골목 배달소', unlockCost:0,      mul:1.0,   emoji:'🏘️'},
+  {id:'residential', name:'주택가',      unlockCost:2000,   mul:2.0,   emoji:'🏠'},
+  {id:'commercial',  name:'상업지구',    unlockCost:20000,  mul:4.0,   emoji:'🏪'},
+  {id:'industrial',  name:'산업단지',    unlockCost:200000, mul:8.0,   emoji:'🏭'},
+  {id:'newtown',     name:'신도시',      unlockCost:2e6,    mul:16.0,  emoji:'🏙️'},
+  {id:'downtown',    name:'도심',        unlockCost:2e7,    mul:30.0,  emoji:'🌆'},
+  {id:'harbor',      name:'항구',        unlockCost:2e8,    mul:55.0,  emoji:'⛵'},
+  {id:'airport',     name:'공항',        unlockCost:2e9,    mul:100.0, emoji:'✈️'},
+  {id:'global',      name:'글로벌 허브', unlockCost:2e10,   mul:200.0, emoji:'🌍'},
+  {id:'future',      name:'미래 도시',   unlockCost:2e11,   mul:400.0, emoji:'🚀'},
+];
+const RARITY=[
+  {name:'일반', color:'#9BA3C0',bg:'rgba(155,163,192,.12)',mul:1.0},
+  {name:'희귀', color:'#4EA0F7',bg:'rgba(78,160,247,.12)', mul:1.5},
+  {name:'에픽', color:'#C084FC',bg:'rgba(192,132,252,.12)',mul:2.5},
+  {name:'전설', color:'#FFCC44',bg:'rgba(255,204,68,.12)', mul:4.0},
+  {name:'신화', color:'#FF6BBA',bg:'rgba(255,107,186,.12)',mul:7.0},
+];
+const RARITY_EMOJI=['⚪','🔵','🟣','🟡','🌈'];
+const COURIER_NAMES=[
+  ['쏜이','바늘이','고슴이','동글이','찌릿이'],
+  ['스피디','터보','제트','퀵킥','플래시'],
+  ['캡틴 바늘','매직 고슴','썬더','스톰','골든 바늘'],
+  ['알파 가시','스타','드래곤 고슴','나이트','크리스탈'],
+  ['우주 배달러','고슴 신','타임 가시','가이아','오메가'],
+];
+const BASIC_RATES =[.60,.25,.10,.04,.01];
+const PREMIUM_RATES=[0,.30,.35,.25,.10];
 const MILESTONES=[
-  [100,'첫 100 코인! 🎊'],[1000,'1,000 코인 돌파!'],[10000,'1만 코인 도달! 💰'],
-  [1e5,'10만 코인! 🚀'],[1e6,'백만장자! 💎'],[1e9,'십억! 🌟'],[1e12,'조만장자!! 🔥'],
+  [100,'첫 100 코인! 🎊',0],
+  [1000,'1,000 코인 돌파!',5],
+  [10000,'1만 코인 달성!',10],
+  [1e5,'10만 코인! 💰',20],
+  [1e6,'백만 코인! 💎',50],
+  [1e9,'십억 코인! 🌟',100],
+  [1e12,'조 코인!! 🔥',500],
 ];
 
-let S={coins:10,totalEarned:0,fac:{},prestigeLevel:0,lastSave:new Date().toISOString()};
+let S={coins:10,gems:50,totalEarned:0,fac:{},unlockedZones:['alley'],couriers:[],prestigeLevel:0,lastSave:''};
 let offlineCoins=0,offlineSecs=0,hogJiggle=0,lastMilestone=-1;
-let lastTime=performance.now(),lastRender=0,saveTimer=0;
+let lastTime=performance.now(),lastRender=0,saveTimer=0,zoneTimer=0;
+let activeTab='fac';
 
 const lv=id=>S.fac[id]||0;
 const cost=f=>Math.ceil(f.baseCost*Math.pow(f.cMul,lv(f.id)));
 const facRPS=f=>{const l=lv(f.id);return l?f.baseRPS*Math.pow(f.rMul,l-1):0;};
-const totalRPS=()=>FAC.reduce((s,f)=>s+facRPS(f),0);
-const clickPow=()=>Math.max(1,totalRPS()*.1);
+const zoneMul=()=>ZONES.filter(z=>S.unlockedZones.includes(z.id)).reduce((s,z)=>s+z.mul,0);
+const courierMul=()=>1+S.couriers.reduce((s,c)=>s+RARITY[c.rarity].mul*.02,0);
 const pMul=()=>1+S.prestigeLevel*.05;
+const totalRPS=()=>FAC.reduce((s,f)=>s+facRPS(f),0)*zoneMul()*courierMul()*pMul();
+const clickPow=()=>Math.max(1,totalRPS()*.1);
 
 function fmt(n){
   if(n<1e3)return Math.floor(n).toString();
@@ -163,28 +314,53 @@ function fmtTime(s){
   return m?h+'시간 '+m+'분':h+'시간';
 }
 
-function save(){S.lastSave=new Date().toISOString();localStorage.setItem('hdt_v3',JSON.stringify(S));}
+function save(){S.lastSave=new Date().toISOString();localStorage.setItem('hdt_v4',JSON.stringify(S));}
 function load(){
   try{
-    const d=JSON.parse(localStorage.getItem('hdt_v3')||'null');
+    let d=JSON.parse(localStorage.getItem('hdt_v4')||'null');
+    if(!d){
+      const v3=JSON.parse(localStorage.getItem('hdt_v3')||'null');
+      if(v3)d=Object.assign({},v3,{gems:50,unlockedZones:['alley'],couriers:[]});
+    }
     if(!d)return;
-    S.coins=d.coins||0;S.totalEarned=d.totalEarned||0;
-    S.fac=d.fac||{};S.prestigeLevel=d.prestigeLevel||0;
+    S.coins=d.coins||0;
+    S.gems=d.gems!=null?d.gems:50;
+    S.totalEarned=d.totalEarned||0;
+    S.fac=d.fac||{};
+    S.unlockedZones=d.unlockedZones||['alley'];
+    S.couriers=d.couriers||[];
+    S.prestigeLevel=d.prestigeLevel||0;
     if(d.lastSave){
       offlineSecs=Math.max(0,Math.min((Date.now()-new Date(d.lastSave))/1000,8*3600));
-      if(offlineSecs>60)offlineCoins=totalRPS()*offlineSecs*.5*pMul();
+      if(offlineSecs>60)offlineCoins=totalRPS()*offlineSecs*.5;
+    }
+    for(let i=MILESTONES.length-1;i>=0;i--){
+      if(S.totalEarned>=MILESTONES[i][0]){lastMilestone=i;break;}
     }
   }catch(e){}
 }
 
+function switchTab(tab){
+  activeTab=tab;
+  document.querySelectorAll('.tab-btn').forEach((b,i)=>{
+    b.classList.toggle('active',['fac','zone','courier'][i]===tab);
+  });
+  document.querySelectorAll('.tab-content').forEach(c=>{
+    c.classList.toggle('active',c.id==='tab-'+tab);
+  });
+  if(tab==='zone')renderZones();
+  if(tab==='courier')renderCouriers();
+}
+
 function onTap(e){
   e.preventDefault();
-  const p=clickPow()*pMul();
+  const p=clickPow();
   S.coins+=p;S.totalEarned+=p;hogJiggle=10;
   const src=e.changedTouches?e.changedTouches[0]:e;
   spawnParticle(src.clientX,src.clientY,'+'+fmt(p));
-  checkMilestones();updateAffordability();
+  checkMilestones();
 }
+
 function upgrade(id){
   const f=FAC.find(x=>x.id===id),c=cost(f);
   if(S.coins<c)return;
@@ -192,6 +368,58 @@ function upgrade(id){
   showToast(f.emoji+' '+f.name+' Lv.'+lv(id));
   renderFacilities();save();
 }
+
+function unlockZone(id){
+  const z=ZONES.find(x=>x.id===id);
+  if(!z||S.unlockedZones.includes(id))return;
+  if(S.coins<z.unlockCost){showToast('💰 코인이 부족해요!');return;}
+  S.coins-=z.unlockCost;
+  S.unlockedZones.push(id);
+  showToast(z.emoji+' '+z.name+' 개방! 배율 +×'+z.mul);
+  renderZones();save();
+}
+
+function recruitBasic(){
+  if(S.coins<500){showToast('💰 코인이 부족해요! (500 필요)');return;}
+  S.coins-=500;
+  doRecruit(BASIC_RATES);
+  save();
+}
+function recruitPremium(){
+  if(S.gems<300){showToast('💎 젬이 부족해요! (300 필요)');return;}
+  S.gems-=300;
+  doRecruit(PREMIUM_RATES);
+  save();
+}
+function doRecruit(rates){
+  const r=Math.random();
+  let acc=0,rarity=rates.length-1;
+  for(let i=0;i<rates.length;i++){
+    if(!rates[i])continue;
+    acc+=rates[i];
+    if(r<acc){rarity=i;break;}
+  }
+  const names=COURIER_NAMES[rarity];
+  const name=names[Math.floor(Math.random()*names.length)];
+  const courier={rarity,name,id:Date.now()};
+  S.couriers.push(courier);
+  showRecruitResult(courier);
+  renderCouriers();
+}
+function showRecruitResult(c){
+  const R=RARITY[c.rarity];
+  const card=document.getElementById('rr-card');
+  card.style.background=R.bg;
+  card.style.border='1px solid '+R.color+'70';
+  document.getElementById('rr-emoji').textContent=RARITY_EMOJI[c.rarity];
+  document.getElementById('rr-rarity').textContent=R.name;
+  document.getElementById('rr-rarity').style.color=R.color;
+  document.getElementById('rr-name').textContent=c.name;
+  document.getElementById('rr-bonus').textContent='+'+Math.round(R.mul*.02*100)+'% 수익 보너스';
+  document.getElementById('recruit-overlay').classList.add('show');
+}
+function closeRecruit(){document.getElementById('recruit-overlay').classList.remove('show');}
+
 function claimOffline(){
   S.coins+=offlineCoins;S.totalEarned+=offlineCoins;offlineCoins=0;
   document.getElementById('offline-overlay').classList.remove('show');
@@ -203,13 +431,12 @@ function showPrestige(){
 }
 function closePrestige(){document.getElementById('prestige-overlay').classList.remove('show');}
 function doPrestige(){
-  S.prestigeLevel++;S.coins=0;S.totalEarned=0;S.fac={};lastMilestone=-1;
+  S.prestigeLevel++;S.coins=0;S.totalEarned=0;S.fac={};S.unlockedZones=['alley'];lastMilestone=-1;
   closePrestige();
-  const b=document.getElementById('prestige-badge');
-  b.style.display='block';
+  document.getElementById('prestige-badge').style.display='block';
   document.getElementById('prestige-val').textContent=S.prestigeLevel;
   showToast('⭐ 프레스티지 '+S.prestigeLevel+'회! 수익 +'+(S.prestigeLevel*5)+'%');
-  renderFacilities();save();
+  renderFacilities();if(activeTab==='zone')renderZones();save();
 }
 
 function spawnParticle(x,y,text){
@@ -218,11 +445,14 @@ function spawnParticle(x,y,text){
   el.style.cssText='left:'+(x-16)+'px;top:'+(y-16)+'px';
   document.body.appendChild(el);setTimeout(()=>el.remove(),900);
 }
-
 function checkMilestones(){
   for(let i=lastMilestone+1;i<MILESTONES.length;i++){
-    if(S.totalEarned>=MILESTONES[i][0]){showToast('🎉 '+MILESTONES[i][1]);lastMilestone=i;}
-    else break;
+    if(S.totalEarned>=MILESTONES[i][0]){
+      const gems=MILESTONES[i][2];
+      if(gems>0){S.gems+=gems;showToast('🎉 '+MILESTONES[i][1]+' 💎+'+gems);}
+      else showToast('🎉 '+MILESTONES[i][1]);
+      lastMilestone=i;
+    }else break;
   }
 }
 let toastTimer;
@@ -243,36 +473,96 @@ function renderFacilities(){
       <div class="fac-info">
         <div class="fac-name">${f.name}</div>
         <div class="fac-meta">Lv.${l}</div>
-        ${l>0?`<div class="fac-rps">+${fmt(rps)}/초</div>`:''}
+        ${l>0?`<div class="fac-rps">+${fmt(rps)}/초 (기본)</div>`:''}
       </div>
-      <button class="fac-btn"${can?'':' disabled'} onclick="upgrade('${f.id}')">
+      <button class="action-btn"${can?'':' disabled'} onclick="upgrade('${f.id}')">
         ${l===0?'구매':'업그레이드'}
         <span class="btn-cost">💰 ${fmt(c)}</span>
       </button>`;
     list.appendChild(div);
   });
 }
+
+function renderZones(){
+  const list=document.getElementById('zone-list');
+  list.innerHTML='';
+  ZONES.forEach((z,idx)=>{
+    const unlocked=S.unlockedZones.includes(z.id);
+    const prevUnlocked=idx===0||S.unlockedZones.includes(ZONES[idx-1].id);
+    const available=!unlocked&&prevUnlocked;
+    const can=available&&S.coins>=z.unlockCost;
+    const div=document.createElement('div');
+    div.className='zone-card'+(unlocked?' unlocked':can?' affordable':'');
+    let right='';
+    if(unlocked){
+      right=`<span class="active-badge">✓ 개방중</span>`;
+    }else if(available){
+      right=`<button class="zone-btn"${can?'':' disabled'} onclick="unlockZone('${z.id}')">
+        개방<span class="btn-cost">💰 ${fmt(z.unlockCost)}</span>
+      </button>`;
+    }else{
+      right=`<button class="zone-btn" disabled>잠김<span class="btn-cost">🔒</span></button>`;
+    }
+    div.innerHTML=`<div class="zone-emoji">${z.emoji}</div>
+      <div class="zone-info">
+        <div class="zone-name">${z.name}</div>
+        <div class="zone-mul">배율 +×${z.mul}</div>
+      </div>${right}`;
+    list.appendChild(div);
+  });
+}
+
+function renderCouriers(){
+  const count=S.couriers.length;
+  document.getElementById('courier-count').textContent=count;
+  const list=document.getElementById('courier-list');
+  list.innerHTML='';
+  if(!count){
+    list.innerHTML=`<div class="empty-state"><div class="es-icon">🦔</div><p>아직 택배원이 없어요!<br>위 버튼으로 고슴도치를 영입하세요</p></div>`;
+    return;
+  }
+  const sorted=[...S.couriers].sort((a,b)=>b.rarity-a.rarity);
+  sorted.forEach(c=>{
+    const R=RARITY[c.rarity];
+    const div=document.createElement('div');
+    div.className='courier-card';
+    div.innerHTML=`<div class="courier-icon">${RARITY_EMOJI[c.rarity]}</div>
+      <div class="courier-info">
+        <div class="courier-name">${c.name}</div>
+        <div class="courier-bonus">+${Math.round(R.mul*.02*100)}% 수익 보너스</div>
+      </div>
+      <span class="rarity-badge" style="background:${R.bg};color:${R.color};border:1px solid ${R.color}60">${R.name}</span>`;
+    list.appendChild(div);
+  });
+}
+
 function updateAffordability(){
   document.querySelectorAll('.fac-card').forEach((card,i)=>{
     if(!FAC[i])return;
     const can=S.coins>=cost(FAC[i]);
     card.classList.toggle('affordable',can);
-    const btn=card.querySelector('.fac-btn');
+    const btn=card.querySelector('.action-btn');
     if(btn)btn.disabled=!can;
   });
 }
 
 function tick(now){
   const dt=Math.min((now-lastTime)/1000,.5);lastTime=now;
-  const income=totalRPS()*dt*pMul();
+  const income=totalRPS()*dt;
   if(income>0){S.coins+=income;S.totalEarned+=income;checkMilestones();}
   if(hogJiggle>0)hogJiggle=Math.max(0,hogJiggle-dt*28);
   saveTimer+=dt;if(saveTimer>=30){save();saveTimer=0;}
+  zoneTimer+=dt;
   if(now-lastRender>=100){
     document.getElementById('coin-val').textContent=fmt(S.coins);
-    document.getElementById('rps-val').textContent=fmt(totalRPS()*pMul());
-    document.getElementById('click-pow').textContent=fmt(clickPow()*pMul());
-    updateAffordability();lastRender=now;
+    document.getElementById('gem-val').textContent=fmt(S.gems);
+    document.getElementById('rps-val').textContent=fmt(totalRPS());
+    document.getElementById('click-pow').textContent=fmt(clickPow());
+    document.getElementById('zone-mul-val').textContent=zoneMul().toFixed(1);
+    document.getElementById('courier-mul-val').textContent=courierMul().toFixed(2);
+    updateAffordability();
+    if(activeTab==='zone'&&zoneTimer>1.5){renderZones();zoneTimer=0;}
+    lastRender=now;
   }
   drawHog(now);
   requestAnimationFrame(tick);
@@ -284,19 +574,14 @@ function drawHog(now){
   const w=canvas.width,h=canvas.height;
   ctx.clearRect(0,0,w,h);
   const t=now/1000;
+  const sc=w/130;
+  ctx.save();ctx.scale(sc,sc);
   const jx=hogJiggle>0?Math.sin(t*28)*hogJiggle*.45:0;
   const bob=Math.sin(t*1.6)*1.8;
-  const cx=w/2+jx,cy=h/2+bob;
-  // shadow
-  ctx.beginPath();ctx.ellipse(w/2,cy+34,22,5,0,0,Math.PI*2);
-  ctx.fillStyle='rgba(0,0,0,.3)';ctx.fill();
-  // body
-  ctx.beginPath();ctx.ellipse(cx,cy+5,28,20,0,0,Math.PI*2);
-  ctx.fillStyle='#4a3728';ctx.fill();
-  // belly
-  ctx.beginPath();ctx.ellipse(cx+3,cy+8,17,13,0,0,Math.PI*2);
-  ctx.fillStyle='#d4aa80';ctx.fill();
-  // spines
+  const cx=65+jx,cy=65+bob;
+  ctx.beginPath();ctx.ellipse(65,cy+34,22,5,0,0,Math.PI*2);ctx.fillStyle='rgba(0,0,0,.3)';ctx.fill();
+  ctx.beginPath();ctx.ellipse(cx,cy+5,28,20,0,0,Math.PI*2);ctx.fillStyle='#4a3728';ctx.fill();
+  ctx.beginPath();ctx.ellipse(cx+3,cy+8,17,13,0,0,Math.PI*2);ctx.fillStyle='#d4aa80';ctx.fill();
   ctx.strokeStyle='#7a5c44';ctx.lineWidth=2.2;ctx.lineCap='round';
   for(let i=0;i<12;i++){
     const a=-0.85+i*.195+Math.sin(t*2.5+i*.5)*.035;
@@ -304,25 +589,19 @@ function drawHog(now){
     const len=11+Math.sin(t*3.5+i)*1.2;
     ctx.beginPath();ctx.moveTo(bx,by);ctx.lineTo(bx-Math.cos(a)*len,by-Math.sin(a)*len);ctx.stroke();
   }
-  // head
-  ctx.beginPath();ctx.ellipse(cx+22,cy-2,14,11,-.18,0,Math.PI*2);
-  ctx.fillStyle='#d4aa80';ctx.fill();
-  // eye
+  ctx.beginPath();ctx.ellipse(cx+22,cy-2,14,11,-.18,0,Math.PI*2);ctx.fillStyle='#d4aa80';ctx.fill();
   ctx.beginPath();ctx.arc(cx+28,cy-4,2.8,0,Math.PI*2);ctx.fillStyle='#1a0a00';ctx.fill();
   ctx.beginPath();ctx.arc(cx+29,cy-5,.9,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
-  // nose
   ctx.beginPath();ctx.arc(cx+35,cy-.5,2.2,0,Math.PI*2);ctx.fillStyle='#e87060';ctx.fill();
-  // package
   const px=cx+18,py=cy+15+Math.sin(t*2.8)*1.2;
   ctx.fillStyle='#FF7A30';ctx.fillRect(px-9,py-6,18,12);
   ctx.strokeStyle='#FFD93D';ctx.lineWidth=1.4;
-  ctx.beginPath();ctx.moveTo(px,py-6);ctx.lineTo(px,py+6);
-  ctx.moveTo(px-9,py);ctx.lineTo(px+9,py);ctx.stroke();
-  // legs
+  ctx.beginPath();ctx.moveTo(px,py-6);ctx.lineTo(px,py+6);ctx.moveTo(px-9,py);ctx.lineTo(px+9,py);ctx.stroke();
   ctx.strokeStyle='#d4aa80';ctx.lineWidth=2.8;ctx.lineCap='round';
   const sw=Math.sin(t*4.5)*4;
   ctx.beginPath();ctx.moveTo(cx-7,cy+22);ctx.lineTo(cx-7,cy+33+sw);ctx.stroke();
   ctx.beginPath();ctx.moveTo(cx+7,cy+22);ctx.lineTo(cx+7,cy+33-sw);ctx.stroke();
+  ctx.restore();
 }
 
 function init(){
@@ -336,8 +615,9 @@ function init(){
     document.getElementById('prestige-badge').style.display='block';
     document.getElementById('prestige-val').textContent=S.prestigeLevel;
   }
-  renderFacilities();
+  renderFacilities();renderZones();renderCouriers();
   document.getElementById('coin-val').textContent=fmt(S.coins);
+  document.getElementById('gem-val').textContent=fmt(S.gems);
   if('serviceWorker'in navigator)navigator.serviceWorker.register('sw.js').catch(()=>{});
   requestAnimationFrame(tick);
 }
