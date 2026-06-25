@@ -1,0 +1,11 @@
+{
+  "name": "고슴도치 배달 타이쿤",
+  "short_name": "배달 타이쿤",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FF7128",
+  "theme_color": "#FF7128",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
+}

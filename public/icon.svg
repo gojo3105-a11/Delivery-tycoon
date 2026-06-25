@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="115" fill="#FF7128"/>
+  <ellipse cx="256" cy="290" rx="130" ry="90" fill="#5A4030"/>
+  <ellipse cx="280" cy="295" rx="75" ry="56" fill="#E8C890"/>
+  <rect x="248" y="260" width="42" height="60" rx="6" fill="#FF7128"/>
+  <rect x="264" y="260" width="6" height="60" fill="white"/>
+  <rect x="248" y="283" width="42" height="6" fill="white"/>
+  <ellipse cx="340" cy="268" rx="42" ry="38" fill="#5A4030"/>
+  <ellipse cx="354" cy="280" rx="28" ry="18" fill="#E8C890"/>
+  <circle cx="336" cy="256" r="10" fill="white"/>
+  <circle cx="338" cy="256" r="5" fill="#1A0800"/>
+  <circle cx="340" cy="254" r="2" fill="white"/>
+  <circle cx="364" cy="276" r="7" fill="#FF9090"/>
+  <polygon points="220,230 210,260 230,260" fill="#6A4C34"/>
+  <polygon points="238,220 228,252 248,252" fill="#6A4C34"/>
+  <polygon points="256,216 246,248 266,248" fill="#6A4C34"/>
+  <polygon points="274,220 264,252 284,252" fill="#6A4C34"/>
+  <polygon points="292,228 282,260 302,260" fill="#6A4C34"/>
+</svg>
