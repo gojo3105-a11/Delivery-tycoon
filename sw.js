@@ -1,14 +1,12 @@
-const CACHE = 'hdt-v5';
+const CACHE = 'hdt-v6';
 const ASSETS = [
-  './index.html',
-  './manifest.json',
-  './icon.svg',
-  './assets/index-DQb30I05.css',
-  './assets/index-DZRYlIWe.js',
+  './index.html', './manifest.json', './icon.svg',
+  './assets/index-D5DBTJSJ.css',
+  './assets/index-CK1K9hGZ.js',
   './assets/react-BRnhmgIC.js',
   './assets/phaser-Czz4FBZH.js',
-  './assets/web-BtMGll2_.js',
-  './assets/web-C7X9W99q.js',
+  './assets/web-CVy9EZ0U.js',
+  './assets/web-kU10b1_T.js',
 ];
 
 self.addEventListener('install', e => {
