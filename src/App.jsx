@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar, Style } from '@capacitor/status-bar';
 import { useGameStore } from './store/gameStore';
 import Header from './components/Header';
@@ -12,17 +12,12 @@ import PrestigeOverlay from './components/overlays/PrestigeOverlay';
 import RecruitOverlay from './components/overlays/RecruitOverlay';
 import Toast from './components/Toast';
 
-const TICK_INTERVAL = 100;
 const SAVE_INTERVAL = 10000;
 
 export default function App() {
   const tick           = useGameStore(s => s.tick);
   const save           = useGameStore(s => s.save);
   const loadFromNative = useGameStore(s => s.loadFromNative);
-
-  const lastTickRef = useRef(performance.now());
-  const lastSaveRef = useRef(performance.now());
-  const rafRef      = useRef(null);
 
   useEffect(() => {
     loadFromNative();
@@ -31,36 +26,26 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    let lastTime = performance.now();
+    let lastSave = performance.now();
+    let raf;
 
     function loop(now) {
-      const dt = (now - lastTime) / 1000;
-      lastTime = now;
-
-      tick(Math.min(dt, 0.5));
-
-      if (now - lastSaveRef.current > SAVE_INTERVAL) {
+      tick();
+      if (now - lastSave > SAVE_INTERVAL) {
         save();
-        lastSaveRef.current = now;
+        lastSave = now;
       }
-
-      rafRef.current = requestAnimationFrame(loop);
+      raf = requestAnimationFrame(loop);
     }
 
-    rafRef.current = requestAnimationFrame(loop);
-
-    const handleVisibilityChange = () => {
-      if (document.hidden) {
-        save();
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-    window.addEventListener('beforeunload', save);
-
+    raf = requestAnimationFrame(loop);
+    const onHide = () => save();
+    document.addEventListener('visibilitychange', onHide);
+    window.addEventListener('beforeunload', onHide);
     return () => {
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('beforeunload', save);
+      cancelAnimationFrame(raf);
+      document.removeEventListener('visibilitychange', onHide);
+      window.removeEventListener('beforeunload', onHide);
     };
   }, [tick, save]);
 
@@ -74,7 +59,6 @@ export default function App() {
         <CourierTab />
       </div>
       <TabBar />
-
       <OfflineOverlay />
       <PrestigeOverlay />
       <RecruitOverlay />
