@@ -1,8 +1,8 @@
-const CACHE = 'hdt-v7';
+const CACHE = 'hdt-v8';
 const ASSETS = [
   './index.html', './manifest.json', './icon.svg',
   './assets/index-D5DBTJSJ.css',
-  './assets/index-ClXaZg-I.js',
+  './assets/index-CLua9zYH.js',
   './assets/react-BRnhmgIC.js',
   './assets/phaser-Czz4FBZH.js',
   './assets/web-BfVfU1S3.js',
