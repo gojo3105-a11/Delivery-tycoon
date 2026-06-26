@@ -5,9 +5,9 @@ import { fmtNum } from '../data/gameData';
 export default function Header() {
   const coins  = useGameStore(s => s.coins);
   const gems   = useGameStore(s => s.gems);
-  const getRPS = useGameStore(s => s.getRPS);
+  const getDisplayRPS = useGameStore(s => s.getDisplayRPS);
 
-  const rps = getRPS();
+  const rps = getDisplayRPS();
 
   return (
     <header className="header">
