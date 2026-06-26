@@ -1,5 +1,15 @@
-const CACHE = 'hdt-v2';
-const ASSETS = ['./index.html', './manifest.json', './sw.js', './icon.svg'];
+const CACHE = 'hdt-v5';
+const ASSETS = [
+  './index.html',
+  './manifest.json',
+  './icon.svg',
+  './assets/index-DQb30I05.css',
+  './assets/index-DZRYlIWe.js',
+  './assets/react-BRnhmgIC.js',
+  './assets/phaser-Czz4FBZH.js',
+  './assets/web-BtMGll2_.js',
+  './assets/web-C7X9W99q.js',
+];
 
 self.addEventListener('install', e => {
   e.waitUntil(caches.open(CACHE).then(c => c.addAll(ASSETS)));

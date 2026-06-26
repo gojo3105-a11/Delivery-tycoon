@@ -1,14 +1,11 @@
 {
   "name": "고슴도치 배달 타이쿤",
   "short_name": "배달 타이쿤",
-  "description": "귀여운 고슴도치와 함께 배달 제국을 건설하세요!",
-  "start_url": "/Delivery-tycoon/",
-  "scope": "/Delivery-tycoon/",
+  "start_url": "./",
+  "scope": "./",
   "display": "standalone",
   "orientation": "portrait",
-  "background_color": "#0C0F1A",
-  "theme_color": "#FF7A30",
-  "icons": [
-    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
-  ]
+  "background_color": "#FF7128",
+  "theme_color": "#FF7128",
+  "icons": [{"src":"icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}]
 }
