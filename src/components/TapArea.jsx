@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import { HedgehogScene, createPhaserConfig } from '../game/HedgehogScene';
 import { useGameStore } from '../store/gameStore';
 import { fmtNum, calcZoneMul, calcCourierMul } from '../data/gameData';
+import { Haptics, ImpactStyle } from '@capacitor/haptics';
 
 let phaserGame = null;
 
@@ -20,6 +21,7 @@ export default function TapArea() {
 
   const handleTap = useCallback((px, py) => {
     tap();
+    Haptics.impact({ style: ImpactStyle.Light }).catch(() => {});
 
     if (!containerRef.current) return;
     const label = document.createElement('div');

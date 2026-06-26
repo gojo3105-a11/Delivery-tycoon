@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">고슴도치 배달 타이쿤</string>
+    <string name="title_activity_main">고슴도치 배달 타이쿤</string>
+    <string name="package_name">com.hdt.delivery</string>
+    <string name="custom_url_scheme">com.hdt.delivery</string>
+</resources>

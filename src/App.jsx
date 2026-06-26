@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { StatusBar, Style } from '@capacitor/status-bar';
 import { useGameStore } from './store/gameStore';
 import Header from './components/Header';
 import TapArea from './components/TapArea';
@@ -15,12 +16,19 @@ const TICK_INTERVAL = 100;
 const SAVE_INTERVAL = 10000;
 
 export default function App() {
-  const tick = useGameStore(s => s.tick);
-  const save = useGameStore(s => s.save);
+  const tick           = useGameStore(s => s.tick);
+  const save           = useGameStore(s => s.save);
+  const loadFromNative = useGameStore(s => s.loadFromNative);
 
   const lastTickRef = useRef(performance.now());
   const lastSaveRef = useRef(performance.now());
   const rafRef      = useRef(null);
+
+  useEffect(() => {
+    loadFromNative();
+    StatusBar.setStyle({ style: Style.Light }).catch(() => {});
+    StatusBar.setBackgroundColor({ color: '#FF7128' }).catch(() => {});
+  }, []);
 
   useEffect(() => {
     let lastTime = performance.now();

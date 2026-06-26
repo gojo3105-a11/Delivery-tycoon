@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { Preferences } from '@capacitor/preferences';
 import {
   FAC, ZONES, MILESTONES,
   getFacCost, calcTotalRPS, calcZoneMul, calcCourierMul,
@@ -23,7 +24,7 @@ function defaultState() {
   };
 }
 
-function loadState() {
+function loadStateSync() {
   try {
     const raw = localStorage.getItem(SAVE_KEY);
     if (!raw) return null;
@@ -33,7 +34,7 @@ function loadState() {
   }
 }
 
-function saveState(state) {
+async function saveStateAsync(state) {
   const toSave = {
     coins: state.coins,
     gems: state.gems,
@@ -45,11 +46,23 @@ function saveState(state) {
     lastSave: Date.now(),
     seenMilestones: state.seenMilestones,
   };
-  localStorage.setItem(SAVE_KEY, JSON.stringify(toSave));
+  const json = JSON.stringify(toSave);
+  localStorage.setItem(SAVE_KEY, json);
+  try {
+    await Preferences.set({ key: SAVE_KEY, value: json });
+  } catch {}
+}
+
+async function loadStateAsync() {
+  try {
+    const { value } = await Preferences.get({ key: SAVE_KEY });
+    if (value) return JSON.parse(value);
+  } catch {}
+  return loadStateSync();
 }
 
 export const useGameStore = create((set, get) => {
-  const saved = loadState();
+  const saved = loadStateSync();
   const initial = { ...defaultState(), ...(saved || {}) };
 
   let offlineCoins = 0;
@@ -191,7 +204,12 @@ export const useGameStore = create((set, get) => {
     closeRecruit()   { set({ showRecruit: false, lastRecruitResult: null }); },
 
     save() {
-      saveState(get());
+      saveStateAsync(get());
+    },
+
+    async loadFromNative() {
+      const loaded = await loadStateAsync();
+      if (loaded) set({ ...defaultState(), ...loaded, offlineReward: null });
     },
   };
 });
