@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useCallback } from 'react';
 import Phaser from 'phaser';
-import { HedgehogScene, createPhaserConfig } from '../game/HedgehogScene';
+import { IsometricScene, createIsoConfig } from '../game/IsometricScene';
 import { useGameStore } from '../store/gameStore';
 import { fmtNum } from '../data/gameData';
 import { Haptics, ImpactStyle } from '@capacitor/haptics';
@@ -8,9 +8,9 @@ import { Haptics, ImpactStyle } from '@capacitor/haptics';
 let phaserGame = null;
 
 export default function TapArea() {
-  const containerRef = useRef(null);
-  const tap          = useGameStore(s => s.tap);
-  const getDisplayRPS= useGameStore(s => s.getDisplayRPS);
+  const containerRef  = useRef(null);
+  const tap           = useGameStore(s => s.tap);
+  const getDisplayRPS = useGameStore(s => s.getDisplayRPS);
 
   const handleTap = useCallback((px, py) => {
     tap();
@@ -29,13 +29,17 @@ export default function TapArea() {
   useEffect(() => {
     if (!containerRef.current || phaserGame) return;
 
-    const config = { ...createPhaserConfig('hog-canvas'), parent: containerRef.current };
+    const config = { ...createIsoConfig('iso-canvas'), parent: containerRef.current };
     phaserGame = new Phaser.Game(config);
 
     const wire = () => {
-      const scene = phaserGame?.scene?.getScene('HedgehogScene');
-      if (scene) scene.onTap = handleTap;
-      else setTimeout(wire, 100);
+      const scene = phaserGame?.scene?.getScene('IsometricScene');
+      if (scene) {
+        scene.onTap    = handleTap;
+        scene.getState = () => useGameStore.getState();
+      } else {
+        setTimeout(wire, 100);
+      }
     };
     setTimeout(wire, 200);
 
@@ -46,14 +50,14 @@ export default function TapArea() {
   }, []);
 
   useEffect(() => {
-    const scene = phaserGame?.scene?.getScene('HedgehogScene');
+    const scene = phaserGame?.scene?.getScene('IsometricScene');
     if (scene) scene.onTap = handleTap;
   }, [handleTap]);
 
   const rps = getDisplayRPS();
 
   return (
-    <div className="tap-area" ref={containerRef} id="hog-canvas">
+    <div className="tap-area" ref={containerRef} id="iso-canvas">
       <div className="tap-rps-label">
         {rps > 0 ? `🪙 ${fmtNum(rps)}/초 자동 수익` : '탭해서 코인 수집!'}
       </div>

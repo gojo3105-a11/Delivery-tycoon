@@ -17,7 +17,7 @@
   --r-card:    16px;
   --r-pill:    99px;
   --header-h:  56px;
-  --tap-h:     160px;
+  --tap-h:     280px;
   --tabbar-h:  60px;
 }
 
@@ -53,17 +53,18 @@ body {
   padding: 4px 10px; font-size: 12px; color: rgba(255,255,255,.9); font-weight: 600; white-space: nowrap;
 }
 
-/* ── Tap area ────────────────────────────────────── */
+/* ── Tap area (isometric building scene) ─────────── */
 .tap-area {
   flex-shrink: 0; height: var(--tap-h); position: relative; overflow: hidden;
-  background: linear-gradient(180deg, #FFF5E8 0%, #FFE5C0 100%);
-  border-bottom: 2px solid #FFCC88; cursor: pointer;
+  background: linear-gradient(180deg, #C8E4F5 0%, #D8EEA8 72%, #7CBF5A 100%);
+  border-bottom: 2px solid #8AAA78; cursor: pointer;
 }
 .tap-area canvas { display: block; width: 100% !important; height: 100% !important; }
 .tap-rps-label {
   position: absolute; bottom: 8px; left: 0; right: 0;
   text-align: center; font-size: 12px; font-weight: 700;
-  color: var(--accent); pointer-events: none;
+  color: #1A5A10; text-shadow: 0 1px 3px rgba(255,255,255,.7);
+  pointer-events: none;
 }
 
 /* ── Content & tabs ──────────────────────────────── */
@@ -316,4 +317,103 @@ body {
 .section-heading {
   font-size: 13px; font-weight: 700; color: var(--muted);
   text-transform: uppercase; letter-spacing: .06em; margin: 4px 0 8px;
+}
+
+/* ── Zone company cards (Cat Office style) ──────── */
+.zone-company-card {
+  background: var(--card); border-radius: var(--r-card);
+  box-shadow: 0 2px 8px rgba(0,0,0,.06); margin-bottom: 8px;
+  display: flex; align-items: stretch; overflow: hidden;
+}
+.zone-company-card.contracted { opacity: 0.72; }
+.zone-company-card.unavailable { opacity: 0.42; }
+
+.zcc-icon {
+  width: 56px; flex-shrink: 0; display: flex; align-items: center;
+  justify-content: center; background: linear-gradient(140deg,#FFF5E8,#FFE8C0);
+  border-right: 1px solid #F0E0C8; position: relative;
+}
+.zcc-checkmark {
+  position: absolute; bottom: 4px; right: 4px;
+  background: var(--green); color: #fff; border-radius: 50%;
+  width: 16px; height: 16px; font-size: 9px; font-weight: 900;
+  display: flex; align-items: center; justify-content: center;
+}
+
+.zcc-body { flex: 1; padding: 10px 10px 8px; min-width: 0; }
+.zcc-header { display: flex; align-items: center; gap: 6px; margin-bottom: 2px; }
+.zcc-name { font-size: 14px; font-weight: 800; flex: 1; color: var(--text); }
+.zcc-grade {
+  font-size: 11px; font-weight: 800; border-radius: 5px;
+  padding: 1px 7px; color: #fff; flex-shrink: 0;
+}
+.zcc-stars { margin-bottom: 3px; letter-spacing: 1px; }
+.zcc-desc { font-size: 11px; color: var(--text2); line-height: 1.4; margin-bottom: 3px; }
+.zcc-mul { font-size: 12px; color: var(--accent); font-weight: 700; }
+
+.zcc-action {
+  width: 72px; flex-shrink: 0; display: flex; align-items: center;
+  justify-content: center; padding: 8px 8px 8px 4px;
+}
+.zcc-contract-btn {
+  width: 100%; border: none; border-radius: 10px;
+  background: var(--green); color: #fff; font-weight: 800;
+  font-size: 11px; cursor: pointer; padding: 10px 4px;
+  box-shadow: 0 3px 0 var(--green-dk); text-align: center;
+  transition: transform .08s, box-shadow .08s;
+}
+.zcc-contract-btn:active { transform: translateY(3px); box-shadow: none; }
+.zcc-contract-btn:disabled {
+  background: #D8CCC0; box-shadow: 0 3px 0 #B8ACA0;
+  color: var(--muted); pointer-events: none;
+}
+.zcc-active { font-size: 11px; font-weight: 700; color: var(--green); text-align: center; }
+.zcc-locked { font-size: 20px; text-align: center; }
+
+/* ── Contract detail popup ───────────────────────── */
+.contract-backdrop {
+  position: fixed; inset: 0; background: rgba(0,0,0,.55); z-index: 100;
+  display: flex; align-items: center; justify-content: center; padding: 20px;
+}
+.contract-sheet {
+  background: var(--surface); border-radius: 20px; padding: 22px 20px 18px;
+  width: 100%; max-width: 340px; box-shadow: 0 8px 32px rgba(0,0,0,.25);
+}
+.cs-title {
+  font-size: 18px; font-weight: 800; text-align: center;
+  margin-bottom: 16px; color: var(--text);
+}
+.cs-company-row {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 16px;
+  padding: 12px; background: var(--bg); border-radius: 12px;
+}
+.cs-company-name { font-size: 15px; font-weight: 800; margin-bottom: 4px; }
+.cs-grade-badge {
+  font-size: 12px; font-weight: 800; border-radius: 5px;
+  padding: 2px 8px; color: #fff; display: inline-block;
+}
+.cs-fee-row {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 9px 0; border-bottom: 1px solid #F0E4D0;
+  font-size: 14px; color: var(--text2); font-weight: 600;
+}
+.cs-fee-row:last-of-type { border-bottom: none; }
+.cs-fee-label { }
+.cs-fee-val { font-weight: 800; color: var(--text); }
+.cs-btn-row { display: flex; gap: 10px; margin-top: 12px; }
+.cs-cancel {
+  flex: 1; border: 2px solid #E8D8C8; background: var(--surface);
+  border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 700;
+  color: var(--text2); cursor: pointer;
+}
+.cs-confirm {
+  flex: 2; border: none; background: var(--green); color: #fff;
+  border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 800;
+  cursor: pointer; box-shadow: 0 4px 0 var(--green-dk);
+  transition: transform .08s, box-shadow .08s;
+}
+.cs-confirm:active { transform: translateY(3px); box-shadow: none; }
+.cs-confirm:disabled {
+  background: #D8CCC0; box-shadow: 0 3px 0 #B8ACA0;
+  color: var(--muted); pointer-events: none;
 }
