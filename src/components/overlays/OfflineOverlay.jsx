@@ -15,7 +15,7 @@ export default function OfflineOverlay() {
   return (
     <div className="overlay-backdrop" onClick={dismiss}>
       <div className="overlay-sheet" onClick={e => e.stopPropagation()}>
-        <div className="overlay-title">오프라인 수익 💤</div>
+        <div className="overlay-title">야간 배송 정산 💤</div>
         <div style={{ textAlign: 'center', padding: '12px 0' }}>
           <div style={{ fontSize: 48 }}>📦</div>
           <div style={{ fontSize: 16, marginTop: 10, color: 'var(--text2)' }}>

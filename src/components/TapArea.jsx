@@ -59,7 +59,7 @@ export default function TapArea() {
   return (
     <div className="tap-area" ref={containerRef} id="iso-canvas">
       <div className="tap-rps-label">
-        {rps > 0 ? `🪙 ${fmtNum(rps)}/초 자동 수익` : '탭해서 코인 수집!'}
+        {rps > 0 ? `🪙 ${fmtNum(rps)}/초 자동 배달 수익` : '탭해서 도토리 코인 수집!'}
       </div>
     </div>
   );

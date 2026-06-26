@@ -21,7 +21,7 @@ export default function RecruitOverlay() {
     <div className="overlay-backdrop" onClick={close}>
       <div className="overlay-sheet" onClick={e => e.stopPropagation()}>
         <div className="overlay-title">
-          {isPremium ? '💎 프리미엄 모집' : '🪙 일반 모집'}
+          {isPremium ? '💎 프리미엄 스카우트' : '🪙 일반 스카우트'}
         </div>
 
         {result ? (
@@ -40,7 +40,7 @@ export default function RecruitOverlay() {
         ) : (
           <div style={{ padding: '12px 0' }}>
             <div style={{ fontSize: 13, color: 'var(--text2)', marginBottom: 12, textAlign: 'center' }}>
-              택배원 출현 확률
+              배달원 출현 확률
             </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
               {RARITY.map((r, i) => (
@@ -71,7 +71,7 @@ export default function RecruitOverlay() {
             disabled={!canBuy}
             onClick={() => recruit(isPremium)}
           >
-            {isPremium ? `💎 ${cost}` : `🪙 ${fmtNum(cost)}`} 모집
+            {isPremium ? `💎 ${cost}` : `🪙 ${fmtNum(cost)}`} 스카우트
           </button>
         </div>
       </div>

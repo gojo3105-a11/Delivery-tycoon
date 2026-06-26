@@ -88,7 +88,7 @@ export default function ZoneTab() {
       {confirm && (
         <div className="contract-backdrop" onClick={() => setConfirm(null)}>
           <div className="contract-sheet" onClick={e => e.stopPropagation()}>
-            <div className="cs-title">임대 계약</div>
+            <div className="cs-title">브랜드 배달 계약</div>
 
             <div className="cs-company-row">
               <span style={{ fontSize: 40 }}>{confirm.zone.emoji}</span>

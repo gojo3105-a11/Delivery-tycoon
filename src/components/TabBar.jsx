@@ -4,7 +4,7 @@ import { useGameStore } from '../store/gameStore';
 const TABS = [
   { id: 'fac',     icon: '🏭', label: '시설' },
   { id: 'zone',    icon: '🗺️', label: '구역' },
-  { id: 'courier', icon: '🦔', label: '택배원' },
+  { id: 'courier', icon: '🦔', label: '배달원' },
 ];
 
 export default function TabBar() {

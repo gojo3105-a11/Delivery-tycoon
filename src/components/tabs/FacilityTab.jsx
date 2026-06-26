@@ -112,11 +112,11 @@ const FacCard = memo(function FacCard({ fac, level, cycleStart, ready, hasManage
             disabled={coins < fac.managerCost}
             onClick={onBuyManager}
           >
-            👔 매니저 고용 · 🪙 {fmtNum(fac.managerCost)}
+            👔 팀장 고슴도치 임명 · 🪙 {fmtNum(fac.managerCost)}
           </button>
         )}
         {hasManager && (
-          <div className="fac2-manager-active">👔 매니저 활동 중</div>
+          <div className="fac2-manager-active">👔 팀장 고슴도치 활동 중</div>
         )}
       </div>
 
@@ -192,7 +192,7 @@ export default function FacilityTab() {
         )}
         {canPrestige && (
           <button className="btn-3d btn-orange prestige-btn" onClick={openPrestige}>
-            ✨ 명성 전환
+            🏗️ 도시 재개발
           </button>
         )}
       </div>
@@ -232,7 +232,7 @@ export default function FacilityTab() {
         </div>
         {prestigeLevel > 0 && (
           <div className="mul-info-row">
-            <span>✨ 명성 보너스</span><span>×{(1 + prestigeLevel * 0.05).toFixed(2)}</span>
+            <span>🏅 가시 뱃지 보너스</span><span>×{(1 + prestigeLevel * 0.05).toFixed(2)}</span>
           </div>
         )}
         {boostActive && (
