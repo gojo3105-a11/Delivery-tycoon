@@ -10,21 +10,12 @@ export class HedgehogScene extends Phaser.Scene {
   }
 
   create() {
-    const { width, height } = this.scale;
     this.graphics = this.add.graphics();
 
     this.input.on('pointerdown', (ptr) => {
       this._jiggle = 1;
       this._spawnParticle(ptr.x, ptr.y);
       if (this.onTap) this.onTap(ptr.x, ptr.y);
-    });
-
-    this.emitter = this.add.particles(0, 0, null, {
-      speed: { min: 40, max: 120 },
-      angle: { min: 250, max: 290 },
-      scale: { start: 0.4, end: 0 },
-      lifespan: 500,
-      quantity: 0,
     });
   }
 
