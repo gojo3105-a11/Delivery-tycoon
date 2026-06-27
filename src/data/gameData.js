@@ -98,6 +98,27 @@ export const PRESTIGE_THRESHOLD = 1e6;
 export const BOOST_COST         = 50;   // gems
 export const BOOST_DURATION_MS  = 4 * 3600 * 1000;
 
+// 스폰서 배달 보너스 (GDD S11 광고 리워드) — 무료 ×2 부스트, 쿨다운제
+export const AD_BOOST_DURATION_MS = 30 * 60 * 1000;   // 30분
+export const AD_BOOST_COOLDOWN_MS = 30 * 60 * 1000;   // 30분 쿨다운
+
+// 오늘의 출근 도장 (GDD S9/S10) — 7일 주기 가시 크리스탈 보상
+export const CHECKIN_REWARDS = [
+  { day: 1, gems: 10,  label: '💎 10'  },
+  { day: 2, gems: 15,  label: '💎 15'  },
+  { day: 3, gems: 20,  label: '💎 20'  },
+  { day: 4, gems: 30,  label: '💎 30'  },
+  { day: 5, gems: 40,  label: '💎 40'  },
+  { day: 6, gems: 60,  label: '💎 60'  },
+  { day: 7, gems: 120, label: '💎 120 + ⚡부스트', boost: true },
+];
+
+// 로컬 날짜 키 (YYYY-MM-DD) — 출석 판정용
+export function todayKey(now = Date.now()) {
+  const d = new Date(now);
+  return `${d.getFullYear()}-${d.getMonth() + 1}-${d.getDate()}`;
+}
+
 export function calcZoneMul(unlockedZones) {
   return ZONES.filter(z => unlockedZones.includes(z.id)).reduce((s, z) => s + z.mul, 0);
 }
@@ -110,8 +131,19 @@ export function calcCourierMul(couriers) {
 export function calcGlobalMul(unlockedZones, couriers, prestigeLevel, boostActive) {
   return calcZoneMul(unlockedZones)
     * calcCourierMul(couriers)
-    * (1 + prestigeLevel * 0.05)
+    * calcBadgeMul(prestigeLevel)
     * (boostActive ? 2 : 1);
+}
+
+// 가시 뱃지 영구 배율 (GDD S8): 뱃지 1개 = +5%, 누적 최대 ×10
+export function calcBadgeMul(badges) {
+  return Math.min(1 + badges * 0.05, 10);
+}
+
+// 프레스티지(도시 재개발) 시 획득 뱃지 수 (GDD S8): floor(log10(총수익) - 6), 최소 1
+export function calcPrestigeBadges(totalEarned) {
+  if (totalEarned < PRESTIGE_THRESHOLD) return 0;
+  return Math.max(1, Math.floor(Math.log10(totalEarned)) - 6);
 }
 
 export function calcDisplayRPS(facLevels, facManagers, unlockedZones, couriers, prestigeLevel, boostActive) {

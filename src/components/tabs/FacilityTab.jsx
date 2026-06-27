@@ -160,6 +160,8 @@ export default function FacilityTab() {
   const buyManager   = useGameStore(s => s.buyManager);
   const openPrestige = useGameStore(s => s.openPrestige);
   const activateBoost= useGameStore(s => s.activateBoost);
+  const activateAdBoost   = useGameStore(s => s.activateAdBoost);
+  const adBoostCooldownEnd = useGameStore(s => s.adBoostCooldownEnd);
   const getGlobalMul = useGameStore(s => s.getGlobalMul);
 
   const [now, setNow] = useState(Date.now());
@@ -171,6 +173,8 @@ export default function FacilityTab() {
   const globalMul   = getGlobalMul();
   const boostActive = now < boostEndTime;
   const boostSecs   = boostActive ? Math.ceil((boostEndTime - now) / 1000) : 0;
+  const adReady     = now >= adBoostCooldownEnd;
+  const adCdSecs    = adReady ? 0 : Math.ceil((adBoostCooldownEnd - now) / 1000);
   const anyReady    = FAC.some(f => facReady[f.id]);
   const canPrestige = totalEarned >= PRESTIGE_THRESHOLD;
 
@@ -196,6 +200,19 @@ export default function FacilityTab() {
           </button>
         )}
       </div>
+
+      {/* 스폰서 배달 보너스 — 무료 ×2 부스트 (광고 리워드) */}
+      {!boostActive && (
+        <button
+          className="btn-3d btn-gold sponsor-btn"
+          disabled={!adReady}
+          onClick={activateAdBoost}
+        >
+          {adReady
+            ? '📺 스폰서 배달 · 무료 ×2 부스트 (30분)'
+            : `📺 스폰서 배달 충전 중 · ${fmtTime(adCdSecs)}`}
+        </button>
+      )}
 
       {/* Buy count selector */}
       <BuySelector buyCount={buyCount} setBuyCount={setBuyCount} />

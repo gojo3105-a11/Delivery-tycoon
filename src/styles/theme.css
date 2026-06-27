@@ -282,6 +282,36 @@ body {
 .overlay-btn-row { display: flex; gap: 10px; margin-top: 16px; }
 .overlay-btn-row .btn-3d { flex: 1; padding: 14px; font-size: 15px; }
 
+/* ── Sponsor (ad) boost button ───────────────────── */
+.sponsor-btn {
+  width: 100%; margin-bottom: 10px; padding: 10px 8px; font-size: 13px;
+}
+.sponsor-btn:disabled { opacity: .6; }
+
+/* ── Daily check-in ──────────────────────────────── */
+.checkin-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;
+}
+.checkin-cell {
+  position: relative; background: var(--surface-2, #F4EDE2);
+  border: 2px solid var(--border, #E0D5C5); border-radius: 12px;
+  padding: 10px 4px; text-align: center;
+}
+.checkin-cell.today {
+  border-color: var(--gold); background: #FFF6E0;
+  box-shadow: 0 0 0 3px rgba(212,160,23,.2);
+}
+.checkin-cell.claimed { opacity: .5; }
+.checkin-cell.special { grid-column: span 1; border-color: #8B55C9; }
+.checkin-cell.special.today { box-shadow: 0 0 0 3px rgba(139,85,201,.25); }
+.ci-day   { font-size: 10px; font-weight: 700; color: var(--muted); }
+.ci-emoji { font-size: 22px; margin: 2px 0; }
+.ci-amt   { font-size: 13px; font-weight: 800; color: var(--text); }
+.ci-check {
+  position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 28px; color: var(--green, #2EA856); font-weight: 900;
+}
+
 /* ── Toast ───────────────────────────────────────── */
 .toast {
   position: fixed; top: 70px; left: 50%; transform: translateX(-50%);

@@ -1,12 +1,12 @@
-const CACHE = 'hdt-v12';
+const CACHE = 'hdt-v13';
 const ASSETS = [
   './index.html', './manifest.json', './icon.svg',
-  './assets/index-C-f2GKqv.css',
-  './assets/index-BDPcPX9F.js',
+  './assets/index-DbrXwzVG.css',
+  './assets/index-BMtR55vF.js',
   './assets/react-BRnhmgIC.js',
   './assets/phaser-Czz4FBZH.js',
-  './assets/web-DASVPiBs.js',
-  './assets/web-CZ1IT5zr.js',
+  './assets/web-Dem1bFgr.js',
+  './assets/web-DcFzEtmK.js',
   './sprites/worker.svg',
   './sprites/tree.svg',
   './sprites/bus.svg',

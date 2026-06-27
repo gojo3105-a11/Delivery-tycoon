@@ -1,16 +1,19 @@
 import React from 'react';
 import { useGameStore } from '../../store/gameStore';
+import { calcPrestigeBadges } from '../../data/gameData';
 
 export default function PrestigeOverlay() {
   const show         = useGameStore(s => s.showPrestige);
   const close        = useGameStore(s => s.closePrestige);
   const prestige     = useGameStore(s => s.prestige);
   const prestigeLevel = useGameStore(s => s.prestigeLevel);
+  const totalEarned  = useGameStore(s => s.totalEarned);
   const couriers     = useGameStore(s => s.couriers);
 
   if (!show) return null;
 
-  const nextMul = 1 + (prestigeLevel + 1) * 0.05;
+  const earnBadges = calcPrestigeBadges(totalEarned);
+  const nextMul = Math.min(1 + (prestigeLevel + earnBadges) * 0.05, 10);
 
   return (
     <div className="overlay-backdrop" onClick={close}>
@@ -23,10 +26,13 @@ export default function PrestigeOverlay() {
             배달원과 가시 크리스탈은 유지됩니다.
           </div>
           <div style={{ fontSize: 22, fontWeight: 800, color: 'var(--accent)', marginTop: 14 }}>
-            가시 뱃지 영구 배율 ×{nextMul.toFixed(2)}
+            🏅 가시 뱃지 +{earnBadges}개 획득
+          </div>
+          <div style={{ fontSize: 13, color: 'var(--text2)', marginTop: 6 }}>
+            영구 배율 ×{(Math.min(1 + prestigeLevel * 0.05, 10)).toFixed(2)} → ×{nextMul.toFixed(2)}
           </div>
           <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>
-            가시 뱃지: Lv.{prestigeLevel} → Lv.{prestigeLevel + 1}
+            보유 뱃지: {prestigeLevel}개 → {prestigeLevel + earnBadges}개
           </div>
           <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>
             배달원 {couriers.length}명 유지됨

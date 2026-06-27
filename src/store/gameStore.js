@@ -2,8 +2,9 @@ import { create } from 'zustand';
 import { Preferences } from '@capacitor/preferences';
 import {
   FAC, ZONES, COIN_MILESTONES, PRESTIGE_THRESHOLD, BOOST_COST, BOOST_DURATION_MS,
+  AD_BOOST_DURATION_MS, AD_BOOST_COOLDOWN_MS, CHECKIN_REWARDS, todayKey,
   getFacCost, getFacBulkCost, getFacMaxBuy, getFacIncomePerCycle,
-  calcGlobalMul, calcDisplayRPS,
+  calcGlobalMul, calcDisplayRPS, calcPrestigeBadges,
   rollGacha, pickCourierName,
 } from '../data/gameData';
 
@@ -22,8 +23,11 @@ function defaultState() {
     facManagers:  {},
     unlockedZones: ['alley'],
     couriers: [],
-    prestigeLevel: 0,
+    prestigeLevel: 0,          // 누적 가시 뱃지 수
     boostEndTime: 0,
+    adBoostCooldownEnd: 0,     // 스폰서 배달 부스트 쿨다운 종료 시각
+    lastCheckIn: '',           // 마지막 출근 도장 날짜 키
+    checkInStreak: 0,          // 연속 출석 (1~7 주기)
     lastSave: Date.now(),
     seenMilestones: [],
   };
@@ -43,6 +47,8 @@ async function saveStateAsync(state) {
     facReady: state.facReady, facManagers: state.facManagers,
     unlockedZones: state.unlockedZones, couriers: state.couriers,
     prestigeLevel: state.prestigeLevel, boostEndTime: state.boostEndTime,
+    adBoostCooldownEnd: state.adBoostCooldownEnd,
+    lastCheckIn: state.lastCheckIn, checkInStreak: state.checkInStreak,
     lastSave: Date.now(), seenMilestones: state.seenMilestones,
   };
   const json = JSON.stringify(payload);
@@ -91,6 +97,7 @@ export const useGameStore = create((set, get) => {
     showRecruit:   false,
     recruitIsPremium: false,
     lastRecruitResult: null,
+    showCheckIn:   (initial.lastCheckIn || '') !== todayKey(),
     buyCount:      1,   // 1 | 10 | 100 | 'max'
 
     isBoostActive: () => Date.now() < get().boostEndTime,
@@ -276,14 +283,61 @@ export const useGameStore = create((set, get) => {
     prestige() {
       set(s => {
         if (s.totalEarned < PRESTIGE_THRESHOLD) return {};
+        const earnedBadges = calcPrestigeBadges(s.totalEarned);
         return {
           coins: 10, gems: s.gems, totalEarned: 0,
           facLevels: {}, facCycleStart: {}, facReady: {}, facManagers: {},
           unlockedZones: ['alley'], couriers: s.couriers,
-          prestigeLevel: s.prestigeLevel + 1, seenMilestones: [], showPrestige: false,
+          prestigeLevel: s.prestigeLevel + earnedBadges, seenMilestones: [], showPrestige: false,
         };
       });
     },
+
+    // 스폰서 배달 보너스 (광고 리워드) — 무료 ×2 부스트, 쿨다운제
+    isAdBoostReady: () => Date.now() >= get().adBoostCooldownEnd,
+    activateAdBoost() {
+      set(s => {
+        const now = Date.now();
+        if (now < s.adBoostCooldownEnd) return {};
+        return {
+          boostEndTime:       Math.max(s.boostEndTime, now) + AD_BOOST_DURATION_MS,
+          adBoostCooldownEnd: now + AD_BOOST_COOLDOWN_MS,
+        };
+      });
+    },
+
+    // 야간 배송 정산 2배 — 스폰서 광고로 보너스(원금과 동일) 추가 수령
+    claimOfflineDouble() {
+      set(s => {
+        if (!s.offlineReward) return {};
+        const bonus = s.offlineReward.coins;
+        return {
+          coins:       s.coins + bonus,
+          totalEarned: s.totalEarned + bonus,
+          offlineReward: null,
+        };
+      });
+    },
+
+    // 오늘의 출근 도장
+    claimCheckIn() {
+      set(s => {
+        const today = todayKey();
+        if (s.lastCheckIn === today) return { showCheckIn: false };
+        const streak = (s.checkInStreak % 7) + 1;       // 1~7 주기
+        const reward = CHECKIN_REWARDS[streak - 1];
+        const now    = Date.now();
+        return {
+          gems:          s.gems + reward.gems,
+          boostEndTime:  reward.boost ? Math.max(s.boostEndTime, now) + BOOST_DURATION_MS : s.boostEndTime,
+          lastCheckIn:   today,
+          checkInStreak: streak,
+          showCheckIn:   false,
+          toast:         { msg: `출근 도장 ${streak}일차! ${reward.label}`, gemReward: reward.gems },
+        };
+      });
+    },
+    closeCheckIn() { set({ showCheckIn: false }); },
 
     setBuyCount(n)   { set({ buyCount: n }); },
     setTab(tab)      { set({ activeTab: tab }); },
@@ -304,6 +358,7 @@ export const useGameStore = create((set, get) => {
         coins:       (loaded.coins       || 10) + offline.coins,
         totalEarned: (loaded.totalEarned || 0)  + offline.coins,
         offlineReward: offline.coins > 0.1 ? offline : null,
+        showCheckIn:  (loaded.lastCheckIn || '') !== todayKey(),
       });
     },
   };

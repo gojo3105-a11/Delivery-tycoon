@@ -3,8 +3,9 @@ import { useGameStore } from '../../store/gameStore';
 import { fmtNum } from '../../data/gameData';
 
 export default function OfflineOverlay() {
-  const reward  = useGameStore(s => s.offlineReward);
-  const dismiss = useGameStore(s => s.dismissOffline);
+  const reward       = useGameStore(s => s.offlineReward);
+  const dismiss      = useGameStore(s => s.dismissOffline);
+  const claimDouble  = useGameStore(s => s.claimOfflineDouble);
 
   if (!reward) return null;
 
@@ -25,12 +26,20 @@ export default function OfflineOverlay() {
             +🪙 {fmtNum(reward.coins)}
           </div>
           <div style={{ fontSize: 12, color: 'var(--muted)', marginTop: 4 }}>
-            효율 50% 적용됨
+            효율 50% 적용됨 · 팀장 고슴도치가 야간 배송 완료
           </div>
         </div>
         <div className="overlay-btn-row">
-          <button className="btn-3d btn-orange" onClick={dismiss}>
+          <button
+            className="btn-3d btn-orange"
+            style={{ background: '#EEE', color: '#444', boxShadow: '0 4px 0 #CCC' }}
+            onClick={dismiss}
+          >
             수령하기 🎉
+          </button>
+          <button className="btn-3d btn-gold" onClick={claimDouble}>
+            📺 2배로 받기<br />
+            <span style={{ fontSize: 11, opacity: .85 }}>+🪙 {fmtNum(reward.coins)}</span>
           </button>
         </div>
       </div>

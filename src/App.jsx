@@ -10,6 +10,7 @@ import CourierTab from './components/tabs/CourierTab';
 import OfflineOverlay from './components/overlays/OfflineOverlay';
 import PrestigeOverlay from './components/overlays/PrestigeOverlay';
 import RecruitOverlay from './components/overlays/RecruitOverlay';
+import CheckInOverlay from './components/overlays/CheckInOverlay';
 import Toast from './components/Toast';
 
 const SAVE_INTERVAL = 10000;
@@ -62,6 +63,7 @@ export default function App() {
       <OfflineOverlay />
       <PrestigeOverlay />
       <RecruitOverlay />
+      <CheckInOverlay />
       <Toast />
     </div>
   );
