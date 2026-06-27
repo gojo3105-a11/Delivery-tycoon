@@ -1,0 +1,1193 @@
+<!DOCTYPE html><html lang="ko"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>고슴도치 배달 타이쿤 — 게임 기획서 v1.0</title><style>
+:root{
+--bg:#0B1120;--bg2:#111827;--warm:#FAF3E8;--warm2:#F0E6D3;
+--orange:#E8722A;--orange-lt:#F5924A;--green:#2EA856;--purple:#8B55C9;
+--red:#D94040;--gold:#D4A017;
+--txt:#1A1535;--txt2:#4A4468;--muted:#8A8298;
+--border:#E0D5C5;--border2:#C8BBAA;
+--nav-w:268px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Apple SD Gothic Neo','Malgun Gothic','Noto Sans CJK KR','맑은 고딕',system-ui,sans-serif;background:var(--warm);color:var(--txt);font-size:15px;line-height:1.7}
+
+/* ── NAV ── */
+#nav{position:fixed;top:0;left:0;width:var(--nav-w);height:100vh;background:var(--bg);overflow-y:auto;overflow-x:hidden;z-index:100;padding:0 0 40px}
+#nav::-webkit-scrollbar{width:4px}
+#nav::-webkit-scrollbar-thumb{background:#2a3550;border-radius:2px}
+.nav-logo{padding:28px 24px 20px;border-bottom:1px solid #1e2d48}
+.nav-logo-title{font-size:13px;font-weight:800;color:#fff;letter-spacing:.05em;line-height:1.3}
+.nav-logo-sub{font-size:10px;color:#4a6080;margin-top:3px;letter-spacing:.08em;text-transform:uppercase}
+.nav-group{padding:20px 0 4px}
+.nav-group-label{font-size:10px;font-weight:700;color:#3a5070;letter-spacing:.12em;text-transform:uppercase;padding:0 24px 8px}
+.nav-item{display:block;padding:7px 24px;font-size:12px;font-weight:500;color:#6a8aaa;text-decoration:none;transition:all .15s;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border-left:2px solid transparent}
+.nav-item:hover{color:#fff;background:#151f35;border-left-color:#2a3f60}
+.nav-item.active{color:var(--orange);background:#151f35;border-left-color:var(--orange);font-weight:700}
+.nav-dot{display:inline-block;width:5px;height:5px;border-radius:50%;background:currentColor;margin-right:8px;vertical-align:middle;opacity:.6}
+
+/* ── MAIN ── */
+main{margin-left:var(--nav-w);min-height:100vh}
+.hero{background:var(--bg);padding:60px 60px 50px;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 80% 60% at 60% 50%,#1a2a50 0%,transparent 70%)}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--orange);margin-bottom:12px;position:relative}
+.hero-title{font-size:52px;font-weight:900;color:#fff;line-height:1.05;letter-spacing:-.02em;position:relative;text-wrap:balance}
+.hero-title span{color:var(--orange)}
+.hero-sub{font-size:16px;color:#7090b0;margin-top:16px;max-width:520px;position:relative;line-height:1.6}
+.hero-meta{display:flex;gap:32px;margin-top:32px;position:relative}
+.hero-badge{background:#151f35;border:1px solid #2a3f60;border-radius:8px;padding:10px 18px}
+.hero-badge-label{font-size:10px;color:#4a6080;text-transform:uppercase;letter-spacing:.1em;font-weight:700}
+.hero-badge-val{font-size:14px;font-weight:700;color:#fff;margin-top:2px}
+/* delivery path deco */
+.hero-path{position:absolute;right:60px;top:50%;transform:translateY(-50%);opacity:.08}
+.hero-path svg{width:180px;height:180px}
+
+/* ── CONTENT ── */
+.content{padding:0 60px 80px}
+.section{padding-top:60px}
+.section-header{display:flex;align-items:center;gap:14px;margin-bottom:28px}
+.section-num{font-size:11px;font-weight:800;color:var(--orange);letter-spacing:.1em;background:#fff3e8;border:1px solid #ffd5a8;border-radius:4px;padding:3px 8px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.section-title{font-size:26px;font-weight:900;color:var(--txt);letter-spacing:-.02em;text-wrap:balance}
+.section-divider{border:none;border-top:1px solid var(--border);margin:40px 0}
+
+/* cards */
+.card{background:#fff;border:1px solid var(--border);border-radius:12px;padding:24px;margin-bottom:16px}
+.card-title{font-size:14px;font-weight:800;color:var(--txt);margin-bottom:10px}
+.card-body{font-size:14px;color:var(--txt2);line-height:1.75}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+
+/* copy list */
+.copy-list{list-style:none;counter-reset:c}
+.copy-list li{counter-increment:c;display:flex;gap:12px;padding:14px 0;border-bottom:1px solid var(--border)}
+.copy-list li:last-child{border-bottom:none}
+.copy-list li::before{content:counter(c,'decimal-leading-zero');font-size:11px;font-weight:800;color:var(--orange);font-variant-numeric:tabular-nums;padding-top:2px;flex-shrink:0;min-width:24px}
+.copy-list li span{font-size:15px;font-weight:600;color:var(--txt)}
+.copy-list li em{display:block;font-size:12px;font-style:normal;color:var(--muted);margin-top:2px}
+
+/* fun-points */
+.fun-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:4px}
+.fun-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:20px;display:flex;gap:14px}
+.fun-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.fun-card h4{font-size:14px;font-weight:800;color:var(--txt);margin-bottom:6px}
+.fun-card p{font-size:13px;color:var(--txt2);line-height:1.6}
+
+/* loop */
+.loop-flow{display:flex;flex-direction:column;gap:0}
+.loop-step{display:flex;gap:20px;position:relative}
+.loop-step::before{content:'';position:absolute;left:19px;top:44px;bottom:-12px;width:2px;background:var(--border);z-index:0}
+.loop-step:last-child::before{display:none}
+.loop-num{width:40px;height:40px;border-radius:50%;background:var(--orange);color:#fff;font-size:13px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;z-index:1;margin-bottom:12px}
+.loop-content{padding-top:8px;padding-bottom:20px}
+.loop-content h4{font-size:15px;font-weight:800;color:var(--txt);margin-bottom:4px}
+.loop-content p{font-size:13px;color:var(--txt2);line-height:1.65}
+.loop-sub{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.tag{display:inline-flex;align-items:center;font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.02em}
+.tag-orange{background:#fff0e5;color:#c05010;border:1px solid #ffd5a8}
+.tag-green{background:#e8f9ef;color:#1a7a3e;border:1px solid #a8e5bf}
+.tag-purple{background:#f0e8ff;color:#6030a0;border:1px solid #d0b0ff}
+.tag-blue{background:#e8f0ff;color:#2040a0;border:1px solid #b0c8ff}
+
+/* tables */
+.tbl-wrap{overflow-x:auto;margin:16px 0;border-radius:10px;border:1px solid var(--border)}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:600px}
+thead tr{background:var(--bg);color:#fff}
+thead th{padding:11px 14px;text-align:left;font-weight:700;font-size:11px;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+tbody tr{border-top:1px solid var(--border)}
+tbody tr:nth-child(even){background:#fdf8f2}
+tbody td{padding:10px 14px;color:var(--txt2);vertical-align:top;line-height:1.5}
+tbody td:first-child{color:var(--txt);font-weight:600}
+tbody td strong{color:var(--txt);font-weight:700}
+
+/* char cards */
+.tier-label{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:800;padding:8px 16px;border-radius:8px;margin-bottom:16px}
+.tier-common{background:#f0f0f0;color:#505050}
+.tier-rare{background:#e8f0ff;color:#2060c0}
+.tier-hero{background:#e8fff0;color:#1a8040}
+.tier-legend{background:#fff5cc;color:#8a5a00}
+.tier-myth{background:#f5e8ff;color:#7030b0}
+.char-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:28px}
+.char-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px}
+.char-name{font-size:13px;font-weight:800;color:var(--txt);margin-bottom:6px}
+.char-row{display:flex;gap:4px;margin-bottom:3px;flex-wrap:wrap}
+.char-badge{font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:#f0eaea;color:#804040}
+.char-desc{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.5}
+.char-skill{font-size:11px;font-weight:600;color:var(--orange);margin-top:6px}
+
+/* ui spec */
+.ui-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.ui-card{background:#fff;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.ui-card-head{background:var(--bg);padding:12px 16px}
+.ui-card-title{font-size:12px;font-weight:800;color:#fff;letter-spacing:.04em}
+.ui-card-body{padding:14px 16px;font-size:12px;color:var(--txt2);line-height:1.65}
+.ui-card-body strong{color:var(--txt);font-weight:700;display:block;margin-bottom:4px;margin-top:10px;font-size:11px;text-transform:uppercase;letter-spacing:.06em}
+.ui-card-body strong:first-child{margin-top:0}
+
+/* rename list */
+.rename-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.rename-item{background:#fff;border:1px solid var(--border);border-radius:8px;padding:10px 14px;display:flex;align-items:center;gap:10px;font-size:12px}
+.rename-old{color:var(--muted);text-decoration:line-through;flex:1}
+.rename-arrow{color:var(--orange);font-weight:800;flex-shrink:0}
+.rename-new{color:var(--txt);font-weight:700;flex:1.4}
+
+/* dev spec */
+.spec-block{background:#0f1e36;border-radius:10px;padding:20px 24px;margin:16px 0;overflow-x:auto}
+.spec-block pre{font-family:'SF Mono','Consolas','Courier New',monospace;font-size:12px;color:#a8c8f0;line-height:1.7;white-space:pre}
+.spec-block .kw{color:#e891c8}
+.spec-block .cm{color:#4a6a90}
+.spec-block .str{color:#a8e080}
+.spec-block .num{color:#f0a860}
+.spec-label{font-size:11px;font-weight:700;color:var(--orange);letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px}
+
+/* mvp */
+.priority-table tbody tr td:first-child{font-weight:700}
+.p-must{color:#fff;background:var(--red);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700}
+.p-should{color:#fff;background:var(--orange);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700}
+.p-could{color:#fff;background:var(--green);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700}
+.p-wont{color:var(--muted);background:var(--border);border-radius:4px;padding:2px 8px;font-size:11px;font-weight:700}
+
+/* timeline */
+.timeline{position:relative;padding-left:28px;margin:16px 0}
+.timeline::before{content:'';position:absolute;left:8px;top:4px;bottom:4px;width:2px;background:var(--border)}
+.tl-item{position:relative;margin-bottom:20px}
+.tl-item::before{content:'';position:absolute;left:-24px;top:5px;width:12px;height:12px;border-radius:50%;background:var(--orange);border:2px solid #fff;box-shadow:0 0 0 2px var(--orange)}
+.tl-item h4{font-size:14px;font-weight:800;color:var(--txt);margin-bottom:4px}
+.tl-item p{font-size:13px;color:var(--txt2);line-height:1.6}
+
+/* diff points */
+.diff-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.diff-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:18px 20px}
+.diff-num{font-size:32px;font-weight:900;color:#f0e5d5;line-height:1;margin-bottom:8px;font-variant-numeric:tabular-nums}
+.diff-title{font-size:14px;font-weight:800;color:var(--txt);margin-bottom:6px}
+.diff-desc{font-size:13px;color:var(--txt2);line-height:1.6}
+
+/* roadmap */
+.rm-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.rm-card{background:#fff;border:1px solid var(--border);border-radius:10px;padding:16px;border-top:3px solid var(--orange)}
+.rm-quarter{font-size:11px;font-weight:800;color:var(--orange);letter-spacing:.08em;text-transform:uppercase;margin-bottom:8px}
+.rm-card h4{font-size:14px;font-weight:800;color:var(--txt);margin-bottom:10px}
+.rm-card ul{list-style:none;font-size:12px;color:var(--txt2);line-height:1.8}
+.rm-card ul li::before{content:'▸ ';color:var(--orange);font-size:10px}
+
+/* footer */
+footer{background:var(--bg);color:#4a6080;font-size:12px;padding:24px 60px;margin-left:0}
+footer a{color:#6a90b0;text-decoration:none}
+
+/* responsive */
+@media(max-width:900px){
+  #nav{display:none}
+  main{margin-left:0}
+  .hero{padding:40px 24px 36px}
+  .hero-title{font-size:34px}
+  .content{padding:0 24px 60px}
+  .char-grid{grid-template-columns:repeat(2,1fr)}
+  .rm-grid{grid-template-columns:1fr 1fr}
+  .grid-2,.grid-3,.ui-grid,.diff-grid,.rename-grid{grid-template-columns:1fr}
+}
+</style></head>
+<body>
+
+<!-- NAV -->
+<nav id="nav" aria-label="문서 내비게이션">
+  <div class="nav-logo">
+    <div class="nav-logo-title">🦔 고슴도치 배달 타이쿤</div>
+    <div class="nav-logo-sub">Game Design Document v1.0</div>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">개요</div>
+    <a class="nav-item" href="#s1"><span class="nav-dot"></span>한 줄 소개 카피</a>
+    <a class="nav-item" href="#s2"><span class="nav-dot"></span>게임 콘셉트</a>
+    <a class="nav-item" href="#s3"><span class="nav-dot"></span>핵심 재미</a>
+    <a class="nav-item" href="#s4"><span class="nav-dot"></span>게임 루프</a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">콘텐츠 설계</div>
+    <a class="nav-item" href="#s5"><span class="nav-dot"></span>주요 콘텐츠 구조</a>
+    <a class="nav-item" href="#s6"><span class="nav-dot"></span>캐릭터 시스템</a>
+    <a class="nav-item" href="#s7"><span class="nav-dot"></span>재화 및 BM 설계</a>
+    <a class="nav-item" href="#s8"><span class="nav-dot"></span>성장 시스템</a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">설계 명세</div>
+    <a class="nav-item" href="#s9"><span class="nav-dot"></span>UI/UX 설계</a>
+    <a class="nav-item" href="#s10"><span class="nav-dot"></span>기능명 리네이밍 50</a>
+    <a class="nav-item" href="#s11"><span class="nav-dot"></span>개발 명세 (Unity)</a>
+    <a class="nav-item" href="#s12"><span class="nav-dot"></span>MVP 개발 계획</a>
+  </div>
+  <div class="nav-group">
+    <div class="nav-group-label">전략</div>
+    <a class="nav-item" href="#s13"><span class="nav-dot"></span>차별화 포인트</a>
+    <a class="nav-item" href="#s14"><span class="nav-dot"></span>업데이트 로드맵</a>
+    <a class="nav-item" href="#s15"><span class="nav-dot"></span>추가 개선 제안</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<main>
+<div class="hero">
+  <div class="hero-path" aria-hidden="true">
+    <svg viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="30" cy="30" r="6" fill="white"/>
+      <circle cx="90" cy="20" r="6" fill="white"/>
+      <circle cx="150" cy="50" r="6" fill="white"/>
+      <circle cx="160" cy="110" r="6" fill="white"/>
+      <circle cx="100" cy="150" r="6" fill="white"/>
+      <circle cx="40" cy="140" r="6" fill="white"/>
+      <circle cx="20" cy="90" r="6" fill="white"/>
+      <path d="M30 30 Q60 10 90 20 Q120 30 150 50 Q170 70 160 110 Q150 140 100 150 Q70 160 40 140 Q10 120 20 90 Q25 60 30 30" stroke="white" stroke-width="2" stroke-dasharray="8 6" fill="none"/>
+    </svg>
+  </div>
+  <div class="hero-eyebrow">Game Design Document · 2026</div>
+  <h1 class="hero-title">고슴도치<br><span>배달 타이쿤</span></h1>
+  <p class="hero-sub">귀여운 고슴도치 배달원들이 도시를 점령하는 방치형 타이쿤. 작은 창고에서 출발해 우주 배달망까지 — 당신이 CEO다.</p>
+  <div class="hero-meta">
+    <div class="hero-badge"><div class="hero-badge-label">장르</div><div class="hero-badge-val">방치형 타이쿤 · 캐주얼</div></div>
+    <div class="hero-badge"><div class="hero-badge-label">플랫폼</div><div class="hero-badge-val">iOS · Android</div></div>
+    <div class="hero-badge"><div class="hero-badge-label">목표 등급</div><div class="hero-badge-val">전체이용가</div></div>
+    <div class="hero-badge"><div class="hero-badge-label">벤치마크</div><div class="hero-badge-val">고양이 오피스 타이쿤</div></div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- S1: 한 줄 소개 -->
+<section class="section" id="s1">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2 class="section-title">한 줄 소개 카피 10선</h2>
+  </div>
+  <div class="card">
+    <ul class="copy-list">
+      <li><span>가시 배달원 한 마리로 시작해 도시 전체를 뒤덮는 배달 제국을 세워라!</span><em>메인 스토어 카피 — 성장 판타지 강조</em></li>
+      <li><span>고슴도치들이 굴러간다 — 당신의 배달 타이쿤이 지금 시작됩니다.</span><em>캐릭터 행동 연출 강조, 영상 광고용</em></li>
+      <li><span>손 안 대도 돈 버는 배달 회사 — 오늘도 가시 배달원들이 뛰고 있습니다.</span><em>방치형 핵심 어필, 직장인 타겟</em></li>
+      <li><span>귀여운 고슴도치 CEO가 되어 도시 전체를 배달로 장악하라.</span><em>CEO 판타지 + 귀여움 조합</em></li>
+      <li><span>잠자는 동안에도 배달은 계속된다. 야간 배송이 당신의 수익을 쌓는다.</span><em>오프라인 수익 핵심 메시지</em></li>
+      <li><span>음식 배달부터 우주 택배까지 — 고슴도치 배달 제국의 끝은 어디인가?</span><em>콘텐츠 스케일 강조, 장기 유저 유지</em></li>
+      <li><span>동글동글 가시 배달원들과 함께라면 어떤 오르막도 굴러서 넘는다.</span><em>감성 카피, 귀여운 이미지 소구</em></li>
+      <li><span>전설 등급 배달원 영입, 최첨단 드론 배치, 최고의 배달 제국을 완성하라.</span><em>수집 · 업그레이드 욕구 자극</em></li>
+      <li><span>경쟁사 고양이 회사는 이제 끝 — 가시 배달대가 도시를 접수한다!</span><em>유머 · 경쟁 구도, SNS 공유 유도</em></li>
+      <li><span>도토리 도시의 작은 창고가 은하 최대 물류 기업으로 — 지금 시작하세요.</span><em>스케일업 스토리텔링, 신규 유저 온보딩</em></li>
+    </ul>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S2: 게임 콘셉트 -->
+<section class="section" id="s2">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2 class="section-title">게임 콘셉트</h2>
+  </div>
+  <div class="card">
+    <div class="card-title">세계관 · 설정</div>
+    <div class="card-body">
+      <p><strong>배경</strong>: 의인화된 동물들이 사는 <em>도토리 시티</em>. 디지털 쇼핑이 폭발적으로 성장하며 배달 수요가 급증했지만, 기존 대형 물류사는 모두 게으른 고양이들이 운영하고 있어 서비스가 엉망이다.</p>
+      <br>
+      <p><strong>플레이어 역할</strong>: 도토리 시티 외곽 골목에 있는 낡은 "가시 배달 창고"를 인수한 야심찬 CEO. 처음엔 배달원 한 마리, 스쿠터 한 대가 전부지만 점점 배달망을 키워 도시를 장악하고, 이웃 도시, 국가, 결국 우주까지 확장한다.</p>
+      <br>
+      <p><strong>성장 축</strong>: 시설(허브 규모) × 인력(고슴도치 등급·스킬) × 지역(새 배달 구역) × 계정(프레스티지 보너스)의 4축이 복합적으로 성장하며 플레이어에게 끊임없는 업그레이드 욕구를 제공한다.</p>
+      <br>
+      <p><strong>세계관 특징</strong>: 각 배달 구역은 고유한 문화를 가진다 — 도심(고층 빌딩, 긴급 배달), 항구(해산물 특급), 학원가(야식 배달), 공업 지구(대형 화물), 비밀 숲(마법 소포), 우주 정거장(은하 택배).</p>
+    </div>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">핵심 감성 키워드</div>
+      <div class="card-body">
+        <div class="loop-sub" style="margin:0">
+          <span class="tag tag-orange">귀엽지만 진지한 CEO 판타지</span>
+          <span class="tag tag-green">성장의 쾌감</span>
+          <span class="tag tag-purple">수집 욕구</span>
+          <span class="tag tag-blue">오프라인 수익의 안정감</span>
+          <span class="tag tag-orange">도시 장악감</span>
+          <span class="tag tag-green">가볍게 즐기는 방치형</span>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">타겟 유저</div>
+      <div class="card-body">
+        <p>• 20–35세 직장인·대학생 (방치형 경험자)</p>
+        <p>• 귀여운 캐릭터 수집을 좋아하는 캐주얼 게이머</p>
+        <p>• 출퇴근 중 5–10분 플레이 패턴</p>
+        <p>• 방치형 타이쿤 기경험자 (고양이 오피스, 어비스리움 류)</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S3: 핵심 재미 -->
+<section class="section" id="s3">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2 class="section-title">핵심 재미 5가지</h2>
+  </div>
+  <div class="fun-grid">
+    <div class="fun-card">
+      <div class="fun-icon" style="background:#fff3e8">🏗️</div>
+      <div>
+        <h4>끊임없는 업그레이드 만족감</h4>
+        <p>낡은 창고가 자동화 물류센터로 진화하는 시각적 변화. 건물 레벨업, 새 구역 개방, 드론 도입 등 매 단계마다 눈에 보이는 성장을 제공해 도파민 루프를 형성한다.</p>
+      </div>
+    </div>
+    <div class="fun-card">
+      <div class="fun-icon" style="background:#e8fff0">🦔</div>
+      <div>
+        <h4>고슴도치 수집 욕구</h4>
+        <p>25종 이상의 개성 넘치는 고슴도치 캐릭터. 신화 등급 가시황제를 얻기 위해 조각을 모으는 수집 욕구와, 캐릭터별 스킬 조합의 전략적 재미를 동시에 제공한다.</p>
+      </div>
+    </div>
+    <div class="fun-card">
+      <div class="fun-icon" style="background:#f0e8ff">💰</div>
+      <div>
+        <h4>오프라인 수익의 안도감·기대감</h4>
+        <p>앱을 끄고 일상을 살다가 돌아왔을 때 쌓인 야간 배송 정산금을 확인하는 순간의 쾌감. "내가 자는 동안 고슴도치들이 일했다"는 대리 만족이 리텐션을 높인다.</p>
+      </div>
+    </div>
+    <div class="fun-card">
+      <div class="fun-icon" style="background:#e8f0ff">🌆</div>
+      <div>
+        <h4>도시 장악 판타지</h4>
+        <p>배달 구역을 하나씩 해금하며 도시 지도가 내 색으로 물드는 경험. 처음엔 좁은 골목이었던 배달 범위가 도심 전체, 항구, 산업단지로 확장될 때의 전략적 만족감.</p>
+      </div>
+    </div>
+    <div class="fun-card" style="grid-column:span 2">
+      <div class="fun-icon" style="background:#fff5cc">⚡</div>
+      <div>
+        <h4>이벤트·랭킹의 경쟁 긴장감</h4>
+        <p>매주 열리는 도시 긴급 배달전, 가시컵 랭킹전에서 다른 플레이어와 수익을 경쟁. 평소엔 느긋한 방치형이지만 이벤트 기간만큼은 집중 플레이를 유도해 활성 유저를 만든다.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S4: 게임 루프 -->
+<section class="section" id="s4">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2 class="section-title">게임 루프 설계</h2>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">마이크로 루프 (1–5분)</div>
+      <div class="loop-flow">
+        <div class="loop-step"><div class="loop-num">1</div><div class="loop-content"><h4>주문 발생</h4><p>배달 구역마다 주문이 자동으로 쌓임. 구역 레벨·허브 자동화 수준에 따라 발생량 결정.</p><div class="loop-sub"><span class="tag tag-blue">자동 발생</span><span class="tag tag-orange">구역별 단가 차등</span></div></div></div>
+        <div class="loop-step"><div class="loop-num">2</div><div class="loop-content"><h4>고슴도치 배달원 배치</h4><p>구역에 가시 배달원 할당. 등급·스킬에 따라 배달 속도·수익 배율 차이.</p><div class="loop-sub"><span class="tag tag-green">배치 전략</span><span class="tag tag-purple">스킬 조합</span></div></div></div>
+        <div class="loop-step"><div class="loop-num">3</div><div class="loop-content"><h4>배달 완료 → 도토리 코인 획득</h4><p>배달 완료 시 코인이 쌓임. 빠를수록, 거리가 멀수록 보너스.</p><div class="loop-sub"><span class="tag tag-orange">즉시 보상</span></div></div></div>
+        <div class="loop-step"><div class="loop-num">4</div><div class="loop-content"><h4>즉시 업그레이드 실행</h4><p>쌓인 코인으로 배달 가방·포장대·분류 레일 업그레이드. 수익 즉시 상승 확인.</p></div></div>
+        <div class="loop-step"><div class="loop-num">5</div><div class="loop-content"><h4>광고 시청 → 2배 보너스</h4><p>광고 1회 시청으로 현재 수익 2배 or 야간 정산 2배.</p><div class="loop-sub"><span class="tag tag-green">광고 리워드</span></div></div></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">메조 루프 (30분–2시간)</div>
+      <div class="loop-flow">
+        <div class="loop-step"><div class="loop-num">1</div><div class="loop-content"><h4>신규 배달 구역 해금 조건 달성</h4><p>총 수익 / 배달 횟수 / 특정 아이템 소지 조건 충족.</p></div></div>
+        <div class="loop-step"><div class="loop-num">2</div><div class="loop-content"><h4>새 구역 개방 + 허브 건설</h4><p>구역 개방 애니메이션. 허브 건설 시 수익 기반 확장.</p><div class="loop-sub"><span class="tag tag-orange">시각적 성장 피드백</span></div></div></div>
+        <div class="loop-step"><div class="loop-num">3</div><div class="loop-content"><h4>더 높은 등급 배달원 스카우트</h4><p>영웅·전설 고슴도치 영입을 위한 조각 수집 및 합성.</p></div></div>
+        <div class="loop-step"><div class="loop-num">4</div><div class="loop-content"><h4>팀장 고슴도치 임명 → 구역 자동화</h4><p>팀장 배치 후 해당 구역 완전 자동 운영. 다른 구역에 집중 가능.</p><div class="loop-sub"><span class="tag tag-purple">방치형 핵심</span></div></div></div>
+        <div class="loop-step"><div class="loop-num">5</div><div class="loop-content"><h4>이벤트 미션 완료</h4><p>일일·주간 미션 달성 → 가시 크리스탈·이벤트 재화 수령.</p></div></div>
+      </div>
+    </div>
+  </div>
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">매크로 루프 (다일 ~ 주간) · 프레스티지 루프</div>
+    <div class="grid-3">
+      <div>
+        <p style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:6px">📅 일일 루틴</p>
+        <p style="font-size:12px;color:var(--txt2);line-height:1.65">오프라인 수익 회수 → 출석 도장 → 일일 긴급 주문 → 광고 보너스 3회 → 일일 보상 수령</p>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:6px">📆 주간 루틴</p>
+        <p style="font-size:12px;color:var(--txt2);line-height:1.65">도시 배달 대전 참가 → 가시컵 랭킹 도전 → 긴급 챌린지 → 주간 패스 보상 수령</p>
+      </div>
+      <div>
+        <p style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:6px">♻️ 프레스티지 루프</p>
+        <p style="font-size:12px;color:var(--txt2);line-height:1.65">목표 수익 달성 → 가시 뱃지(영구 배율) 획득 → 리셋 → 빠른 재성장 → 더 높은 층 도달</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S5: 콘텐츠 구조 -->
+<section class="section" id="s5">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2 class="section-title">주요 콘텐츠 구조</h2>
+  </div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>콘텐츠</th><th>역할</th><th>레벨 체계</th><th>핵심 업그레이드</th><th>해금 조건</th></tr></thead>
+      <tbody>
+        <tr><td>배달 허브</td><td>메인 본부, 전체 수익 배율 적용</td><td>Lv1–50 (10단계 외관 변화)</td><td>처리량, 자동화율, 에너지 효율</td><td>게임 시작</td></tr>
+        <tr><td>배달 구역</td><td>주문 발생·수익 원천 (최대 12구역)</td><td>구역별 Lv1–30</td><td>주문량, 배달 단가, 속도</td><td>구역별 해금 코인</td></tr>
+        <tr><td>포장실</td><td>패키지 파손률 감소, 고급 주문 수락</td><td>Lv1–20</td><td>포장 속도, 파손 방지율, VIP 주문 처리</td><td>배달 허브 Lv5</td></tr>
+        <tr><td>분류 센터</td><td>다수 구역 동시 배달 효율화</td><td>Lv1–20</td><td>분류 속도, 병렬 처리 수, 자동 할당</td><td>구역 3개 해금</td></tr>
+        <tr><td>라이더 휴게실</td><td>고슴도치 가시 에너지 충전 속도 향상</td><td>Lv1–15</td><td>회복 속도, 휴게실 수용 인원, 간식 자판기</td><td>배달원 5명 고용</td></tr>
+        <tr><td>정산 사무실</td><td>수익 정산 주기 단축, 오프라인 수익 한도 증가</td><td>Lv1–25</td><td>정산 속도, 오프라인 한도, 보너스 이율</td><td>배달 허브 Lv10</td></tr>
+        <tr><td>고슴도치 숙소</td><td>배달원 수용 인원 증가, 에너지 야간 자동 충전</td><td>Lv1–20</td><td>방 수, 숙소 등급, 야간 에너지 충전율</td><td>배달원 10명 고용</td></tr>
+        <tr><td>CEO 둥지</td><td>CEO 특수 버프 발동, 꾸미기 콘텐츠</td><td>외관 등급 5단계</td><td>수익 배율, 이벤트 보너스, 스킨 장착</td><td>배달 허브 Lv20</td></tr>
+        <tr><td>간식 공장</td><td>고슴도치 전용 간식 제조 → 가시 에너지 아이템</td><td>Lv1–10</td><td>생산 속도, 간식 종류, 보너스 효과</td><td>정산 사무실 Lv10</td></tr>
+        <tr><td>차량 차고</td><td>배달 차량 수집·업그레이드, 구역 배속 적용</td><td>차량 등급 Lv1–10</td><td>이동속도, 적재량, 연료 효율</td><td>CEO 둥지 해금</td></tr>
+        <tr><td>도시 확장 맵</td><td>새 도시·지역 해금, 수익 규모 점프</td><td>도시 6개 (도토리→항구→산업→비밀숲→우주정거장→은하)</td><td>도시 개발도, 브랜드 계약</td><td>현재 도시 완전 점령</td></tr>
+        <tr><td>주간 이벤트</td><td>한정 재화·캐릭터 획득</td><td>매주 교체</td><td>미션 난이도, 보상 티어</td><td>배달 허브 Lv5</td></tr>
+        <tr><td>가시컵 랭킹전</td><td>실시간 수익 경쟁, 순위 보상</td><td>브론즈→실버→골드→다이아→가시황제</td><td>시즌 포인트, 리그 승급</td><td>배달 허브 Lv15</td></tr>
+        <tr><td>출석 도장</td><td>매일 보상, 7일 연속 특별 보상</td><td>월별 갱신</td><td>연속 출석 보너스</td><td>게임 시작</td></tr>
+        <tr><td>업적 시스템</td><td>장기 목표 제공, 영구 버프 해금</td><td>3단계 (동/은/금 가시)</td><td>배달 횟수, 총 수익, 고슴도치 수집 등</td><td>게임 시작</td></tr>
+        <tr><td>배달원 도감</td><td>수집 진행도 표시, 완성 보너스</td><td>완성도 0–100%</td><td>등급별 수집 달성 보너스</td><td>첫 배달원 고용</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S6: 캐릭터 시스템 -->
+<section class="section" id="s6">
+  <div class="section-header">
+    <span class="section-num">06</span>
+    <h2 class="section-title">캐릭터 시스템 — 고슴도치 배달원 도감</h2>
+  </div>
+
+  <div class="tier-label tier-common">⚪ 일반 등급 (Common)</div>
+  <div class="char-grid">
+    <div class="char-card"><div class="char-name">솜털이</div><div class="char-row"><span class="char-badge" style="background:#f5f5f5;color:#555">갈색 · 동글동글</span></div><p class="char-desc">성실하고 묵묵한 신입. 지각은 없지만 속도도 없다.</p><p class="char-skill">📦 배달속도 +5% · 근거리 주문 선호</p></div>
+    <div class="char-card"><div class="char-name">두부</div><div class="char-row"><span class="char-badge" style="background:#f5f5f5;color:#555">흰색 알비노</span></div><p class="char-desc">하얗고 덜렁이지만 짐은 많이 든다.</p><p class="char-skill">🎒 적재량 +10% · 소형 패키지 전문</p></div>
+    <div class="char-card"><div class="char-name">밤톨이</div><div class="char-row"><span class="char-badge" style="background:#f5f5f5;color:#555">짙은 갈색</span></div><p class="char-desc">부지런함으로 먹고 사는 베이직 배달원.</p><p class="char-skill">💰 수익 +5% · 음식 배달 전문</p></div>
+    <div class="char-card"><div class="char-name">고구마</div><div class="char-row"><span class="char-badge" style="background:#fff0e0;color:#905020">주황빛</span></div><p class="char-desc">야식을 너무 좋아해 야간 근무를 자원한다.</p><p class="char-skill">🌙 오프라인 수익 +3% · 야간 배달</p></div>
+    <div class="char-card"><div class="char-name">당근이</div><div class="char-row"><span class="char-badge" style="background:#fff0e0;color:#905020">주황-흰색</span></div><p class="char-desc">겁쟁이지만 도망칠 때는 엄청 빠르다.</p><p class="char-skill">🏃 이동속도 +8% · 단거리 스프린트</p></div>
+  </div>
+
+  <div class="tier-label tier-rare">🔵 희귀 등급 (Rare)</div>
+  <div class="char-grid">
+    <div class="char-card"><div class="char-name">스쿠터본</div><div class="char-row"><span class="char-badge" style="background:#e8f0ff;color:#2050a0">파란 헬멧</span></div><p class="char-desc">속도에 목숨 거는 스쿠터 매니아.</p><p class="char-skill">🛵 스쿠터 속도 +20% · 역주행 돌파</p></div>
+    <div class="char-card"><div class="char-name">쫑긋이</div><div class="char-row"><span class="char-badge" style="background:#e8f0ff;color:#2050a0">귀가 큰 형태</span></div><p class="char-desc">초예민 청각으로 주문을 남들보다 빠르게 감지.</p><p class="char-skill">📡 주문 감지 +15% · 주문 선점</p></div>
+    <div class="char-card"><div class="char-name">두꺼비팩</div><div class="char-row"><span class="char-badge" style="background:#e8fff0;color:#1a6030">초록 가방</span></div><p class="char-desc">힘만큼은 팀에서 1등. 무거운 짐도 거뜬.</p><p class="char-skill">📫 대형 화물 +25% · 파손 방지</p></div>
+    <div class="char-card"><div class="char-name">참깨</div><div class="char-row"><span class="char-badge" style="background:#e8f0ff;color:#2050a0">점무늬 소형</span></div><p class="char-desc">꼼꼼한 성격으로 분실·파손 제로 기록 보유.</p><p class="char-skill">🔒 분실률 -20% · 특급 포장</p></div>
+    <div class="char-card"><div class="char-name">번개빌리</div><div class="char-row"><span class="char-badge" style="background:#fff5cc;color:#806000">노란 줄무늬</span></div><p class="char-desc">충동적이고 무모하지만 특급 배달만큼은 최고.</p><p class="char-skill">⚡ 특급 배달속도 +30% · 번개 배달</p></div>
+  </div>
+
+  <div class="tier-label tier-hero">🟢 영웅 등급 (Hero)</div>
+  <div class="char-grid">
+    <div class="char-card"><div class="char-name">가시대왕</div><div class="char-row"><span class="char-badge" style="background:#e8fff0;color:#1a6030">검은 가시·빨간 안대</span></div><p class="char-desc">카리스마로 팀을 통솔하는 현장 리더.</p><p class="char-skill">👑 팀 전체 수익 +15% · 구역 장악</p></div>
+    <div class="char-card"><div class="char-name">솔이장군</div><div class="char-row"><span class="char-badge" style="background:#e8fff0;color:#1a6030">군복 착용</span></div><p class="char-desc">철저한 규율로 자동화 배달의 효율을 극대화.</p><p class="char-skill">🤖 자동 배달 효율 +25% · 대규모 지휘</p></div>
+    <div class="char-card"><div class="char-name">드리프터</div><div class="char-row"><span class="char-badge" style="background:#e8fff0;color:#1a6030">레이싱 장갑</span></div><p class="char-desc">쿨한 성격, 오토바이로 드리프트 배달.</p><p class="char-skill">🏍️ 오토바이 속도 +40% · 드리프트</p></div>
+    <div class="char-card"><div class="char-name">허브마스터</div><div class="char-row"><span class="char-badge" style="background:#e8fff0;color:#1a6030">두꺼운 안경</span></div><p class="char-desc">시설 공학 박사. 업그레이드 비용을 줄여준다.</p><p class="char-skill">🔧 허브 업그레이드 비용 -20%</p></div>
+    <div class="char-card"><div class="char-name">새벽별이</div><div class="char-row"><span class="char-badge" style="background:#e8fff0;color:#1a6030">별 무늬 망토</span></div><p class="char-desc">새벽 배달이 천직. 한밤에 가장 빛난다.</p><p class="char-skill">🌠 야간 수익 +50% · 새벽 전문</p></div>
+  </div>
+
+  <div class="tier-label tier-legend">🟡 전설 등급 (Legendary)</div>
+  <div class="char-grid">
+    <div class="char-card"><div class="char-name">가시황제 렉스</div><div class="char-row"><span class="char-badge" style="background:#fff5cc;color:#806000">황금 가시 왕관</span></div><p class="char-desc">오만하지만 실력으로 증명하는 전설의 배달왕.</p><p class="char-skill">💎 전체 수익 +30% · 황제 배달 ×3 (6h)</p></div>
+    <div class="char-card"><div class="char-name">쏘니카</div><div class="char-row"><span class="char-badge" style="background:#fff5cc;color:#806000">파란 소용돌이</span></div><p class="char-desc">음속을 넘보는 폭풍 그 자체.</p><p class="char-skill">💨 배달속도 +80% · 음속 배달 (2h 쿨)</p></div>
+    <div class="char-card"><div class="char-name">철갑 루스트</div><div class="char-row"><span class="char-badge" style="background:#fff5cc;color:#806000">갑옷 착용</span></div><p class="char-desc">어떤 상황에서도 패키지는 완벽하게 보호한다.</p><p class="char-skill">🛡️ 패키지 손상률 0% · 무적 배달</p></div>
+    <div class="char-card"><div class="char-name">황금팩 마이다스</div><div class="char-row"><span class="char-badge" style="background:#fff5cc;color:#806000">금색 배달가방</span></div><p class="char-desc">손에 닿는 건 모두 황금이 된다.</p><p class="char-skill">✨ 골드 수익 +50% · 이벤트 보너스</p></div>
+    <div class="char-card"><div class="char-name">가시라 여왕</div><div class="char-row"><span class="char-badge" style="background:#fff5cc;color:#806000">왕관·드레스</span></div><p class="char-desc">VIP 고객만 상대하는 프리미엄 배달의 여왕.</p><p class="char-skill">👸 VIP 주문 수익 +40% · 로얄 서비스</p></div>
+  </div>
+
+  <div class="tier-label tier-myth">🟣 신화 등급 (Mythic)</div>
+  <div class="char-grid">
+    <div class="char-card"><div class="char-name">오르가 신</div><div class="char-row"><span class="char-badge" style="background:#f0e8ff;color:#6030a0">반투명 우주적 형태</span></div><p class="char-desc">배달의 신. 시간을 멈추고 배달을 완료한다.</p><p class="char-skill">🌌 전체 배율 ×2 · 시간 정지 배달 (1일 1회)</p></div>
+    <div class="char-card"><div class="char-name">드래곤라이더 포켓</div><div class="char-row"><span class="char-badge" style="background:#f0e8ff;color:#6030a0">드래곤 탑승</span></div><p class="char-desc">드래곤 등에 타고 하늘 배달 구역을 독점한다.</p><p class="char-skill">🐉 드래곤 구역 독점 수익 · 화염 특급</p></div>
+    <div class="char-card"><div class="char-name">사이버 HH-9000</div><div class="char-row"><span class="char-badge" style="background:#f0e8ff;color:#6030a0">사이버펑크 로봇</span></div><p class="char-desc">AI로 진화한 고슴도치 로봇. 감정은 없고 효율만 있다.</p><p class="char-skill">⚙️ 자동화 효율 +100% · AI 배달 프로토콜</p></div>
+    <div class="char-card"><div class="char-name">코스모</div><div class="char-row"><span class="char-badge" style="background:#f0e8ff;color:#6030a0">우주복 착용</span></div><p class="char-desc">은하 너머까지 배달하는 우주 배달사.</p><p class="char-skill">🚀 우주 구역 해금 · 초공간 배달</p></div>
+    <div class="char-card"><div class="char-name">태초의 프라임</div><div class="char-row"><span class="char-badge" style="background:#f0e8ff;color:#6030a0">원시 에너지 아우라</span></div><p class="char-desc">모든 고슴도치의 시조. 프레스티지를 지배한다.</p><p class="char-skill">♾️ 전체 배율 ×3 · 프레스티지 비용 -30%</p></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S7: 재화 및 BM -->
+<section class="section" id="s7">
+  <div class="section-header">
+    <span class="section-num">07</span>
+    <h2 class="section-title">재화 구조 및 BM 설계</h2>
+  </div>
+
+  <div class="card card-title" style="margin-bottom:16px">재화 체계 전체 표</div>
+  <div class="tbl-wrap">
+    <table>
+      <thead><tr><th>재화명</th><th>아이콘</th><th>종류</th><th>주요 획득처</th><th>주요 사용처</th></tr></thead>
+      <tbody>
+        <tr><td>도토리 코인</td><td>🪙</td><td>기본 재화</td><td>배달 수익, 자동 배달, 오프라인 정산</td><td>시설 업그레이드, 구역 해금, 배달원 고용</td></tr>
+        <tr><td>가시 크리스탈</td><td>💎</td><td>프리미엄 재화</td><td>IAP, 일일 미션, 이벤트 보상, 광고 보상</td><td>뽑기(가챠), 시간 단축, 한정 스킨, 슬롯 확장</td></tr>
+        <tr><td>배달 스탬프</td><td>📮</td><td>이벤트 재화</td><td>이벤트 미션, 긴급 주문 완료</td><td>이벤트 상점 교환, 한정 캐릭터 스카우트</td></tr>
+        <tr><td>강화 부품</td><td>🔩</td><td>업그레이드 재료</td><td>배달 완료 드랍, 분류 센터 생산</td><td>차량·시설 고급 업그레이드</td></tr>
+        <tr><td>포장 소재</td><td>📦</td><td>업그레이드 재료</td><td>포장실 작업, 이벤트 보상</td><td>포장실 업그레이드, 고급 주문 수락</td></tr>
+        <tr><td>가시 조각</td><td>🦔</td><td>캐릭터 성장 재료</td><td>가챠(뽑기), 이벤트, 업적 보상</td><td>캐릭터 합성·등급 돌파</td></tr>
+        <tr><td>스킬 카드</td><td>🃏</td><td>캐릭터 성장 재료</td><td>주간 랭킹 보상, 상점 구매</td><td>캐릭터 스킬 레벨업</td></tr>
+        <tr><td>가시 에너지</td><td>⚡</td><td>활동 재화</td><td>시간 경과, 휴게실, 간식 공장</td><td>특수 스킬 발동, 긴급 배달 참여</td></tr>
+        <tr><td>CEO 포인트</td><td>⭐</td><td>계정 성장</td><td>업적 달성, 프레스티지</td><td>CEO 둥지 업그레이드, 영구 버프 해금</td></tr>
+        <tr><td>가시 뱃지</td><td>🏅</td><td>프레스티지 재화</td><td>프레스티지(리셋) 시 획득</td><td>영구 수익 배율 증가, 특수 시설 해금</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="margin-top:24px">
+    <div class="card-title">인앱 결제 상품 설계</div>
+    <div class="tbl-wrap" style="margin:12px 0 0">
+      <table>
+        <thead><tr><th>상품명</th><th>가격(₩)</th><th>구성품</th><th>구매 동기</th><th>밸런스 주의</th></tr></thead>
+        <tbody>
+          <tr><td>🌱 스타터 패키지</td><td>₩1,100</td><td>가시크리스탈 150 + 희귀 고슴도치 확정 1마리 + 코인 50만</td><td>첫 결제 유도, 낮은 진입 장벽</td><td>1회 구매 한정. 너무 강력하면 무과금 밸런스 붕괴</td></tr>
+          <tr><td>🚫 광고 제거 패키지</td><td>₩3,300</td><td>광고 완전 제거 + 가시크리스탈 100 보너스</td><td>광고 피로감 해소. QoL 구매</td><td>광고 수익 포기 → 유저 LTV 측정 후 결정</td></tr>
+          <tr><td>2️⃣ 2배 수익 패키지</td><td>₩5,500</td><td>7일간 전체 수익 ×2 + 가시크리스탈 50</td><td>성장 가속, 병목 해소</td><td>기간 종료 후 낙폭 체감 최소화 설계 필요</td></tr>
+          <tr><td>📅 월간 패스</td><td>₩6,600/월</td><td>매일 가시크리스탈 80 + 전용 스킨 + 2배 오프라인 수익</td><td>구독 습관 형성, 안정적 LTV</td><td>무과금 대비 5–7배 이상이 되면 이탈 증가</td></tr>
+          <tr><td>🚀 시즌 배달 패스</td><td>₩9,900/시즌(4주)</td><td>시즌 미션 보상 2배 + 한정 고슴도치 + 전용 차량 스킨</td><td>시즌 콘텐츠 참여 동기 강화</td><td>무과금도 무료 패스로 기본 보상 수령 가능해야 함</td></tr>
+          <tr><td>🦔 전설 확정 패키지</td><td>₩16,500</td><td>전설 고슴도치 확정 1마리 + 스킬카드 10장 + 크리스탈 200</td><td>수집 욕구 충족, 강력한 캐릭터 즉시 획득</td><td>전설이 너무 강하면 무과금 이탈. 30% 버프가 마지노선</td></tr>
+          <tr><td>⚡ VIP 멤버십</td><td>₩16,500/월</td><td>오프라인 수익 한도 ×3 + 자동 광고 보상 + 전용 채널 + 크리스탈 200/일</td><td>헤비 유저 전용 프리미엄 경험</td><td>VIP와 일반 유저 수익 격차 5배 이내 유지</td></tr>
+          <tr><td>🎨 한정 스킨 팩</td><td>₩3,300–₩8,800</td><td>고슴도치 한정 스킨 + 배달 허브 테마 스킨</td><td>꾸미기 욕구, FOMO 마케팅</td><td>스킨은 순수 외관용. 스탯 영향 금지</td></tr>
+          <tr><td>🏎️ 차량 스킨 팩</td><td>₩2,200–₩5,500</td><td>차량 전용 외관 스킨 3종 세트</td><td>컬렉션 완성 욕구</td><td>스탯 영향 없이 수집 요소로만 활용</td></tr>
+          <tr><td>🎯 이벤트 부스터</td><td>₩3,300</td><td>이벤트 기간 배달 스탬프 획득량 ×3 (3일)</td><td>이벤트 한정 보상 달성 지원</td><td>이벤트 보상이 부스터 없이도 달성 가능해야 함</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- PART 2: S8–S15 (to be injected before </main> closing tag) -->
+
+<!-- S8: 성장 시스템 -->
+<section class="section" id="s8">
+  <div class="section-header">
+    <span class="section-num">08</span>
+    <h2 class="section-title">성장 시스템 설계</h2>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">초반 빠른 성장 (0–3일)</div>
+      <div class="card-body">
+        <p>• 업그레이드 비용이 낮고 수익 증가폭이 가파름 (x2–x10/단계)</p>
+        <p>• 배달 구역 3개가 빠르게 열려 성취감 제공</p>
+        <p>• 온보딩 퀘스트로 핵심 루프 자연스럽게 학습</p>
+        <p>• 첫 24시간 내 희귀 고슴도치 1마리 보장 드랍</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">중반 병목 구간 (4–21일)</div>
+      <div class="card-body">
+        <p>• 업그레이드 비용이 기하급수적으로 증가 (지수 1.8 적용)</p>
+        <p>• 영웅 등급 고슴도치 확보 위한 조각 수집 필요</p>
+        <p>• 팀장 임명 → 자동화 가속 → 이 구간에서 첫 과금 동기 발생</p>
+        <p>• 이벤트·랭킹 참여로 재화 획득 보완 경로 제공</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">후반 장기 목표 (22일+)</div>
+      <div class="card-body">
+        <p>• 신화 등급 고슴도치 수집 (장기 수집 콘텐츠)</p>
+        <p>• 도시 확장 맵 후반 지역 (비밀 숲, 우주 정거장) 해금</p>
+        <p>• 가시컵 랭킹 최상위 도전</p>
+        <p>• 배달원 도감 100% 완성 → 신화 보너스 버프</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">프레스티지 / 리셋 시스템</div>
+      <div class="card-body">
+        <p>• <strong>가시 뱃지</strong> 획득: 리셋 시 현재 총 수익에 비례한 뱃지 지급</p>
+        <p>• 뱃지 1개 = 전체 수익 영구 +5% (누적 최대 ×10 배율)</p>
+        <p>• 리셋 후 초반 성장 속도가 기하급수적으로 빨라짐</p>
+        <p>• 전설·신화 고슴도치와 CEO 둥지는 리셋 후에도 유지</p>
+        <p>• 신화 등급 프라임 보유 시 프레스티지 비용 -30%</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:8px">
+    <div class="card-title">성장 수식 요약</div>
+    <div class="tbl-wrap" style="margin:12px 0 0">
+      <table>
+        <thead><tr><th>항목</th><th>공식</th><th>비고</th></tr></thead>
+        <tbody>
+          <tr><td>시설 업그레이드 비용</td><td>BaseCost × 1.8^(Level - 1)</td><td>Base는 시설별 상이</td></tr>
+          <tr><td>구역 수익</td><td>BaseRevenue × (1 + Level × 0.15) × ManagerBonus × PrestigeMultiplier</td><td>팀장 배치 시 ×2 기본</td></tr>
+          <tr><td>오프라인 수익 한도</td><td>OfflineCapHours × CurrentRevenue/sec × UpgradeMultiplier</td><td>기본 4h, 정산실 업그레이드로 최대 24h</td></tr>
+          <tr><td>광고 보너스</td><td>CurrentRevenue × 2 × 30min</td><td>일 3회 한도</td></tr>
+          <tr><td>캐릭터 능력치</td><td>BaseStatValue × (1 + StarLevel × 0.2) × SkillMultiplier</td><td>최대 5성, 스킬 Lv 최대 10</td></tr>
+          <tr><td>프레스티지 뱃지</td><td>floor(log10(TotalRevenue) - 6) × 1</td><td>10억 코인 = 뱃지 1개 기준</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">오프라인 수익 설계</div>
+    <div class="card-body">
+      <p>• <strong>기본 오프라인 한도</strong>: 4시간치 수익 → 정산 사무실 업그레이드로 최대 24시간</p>
+      <p>• <strong>VIP 패키지</strong>: 한도 ×3 (최대 72시간)</p>
+      <p>• <strong>수익 팝업</strong>: 복귀 시 "야간 배송 정산" 팝업. 광고 1회로 2배 수령 가능</p>
+      <p>• <strong>야간 배달 고슴도치 보너스</strong>: 새벽별이, 고구마 등 야간 전문 캐릭터 배치 시 오프라인 수익 추가 증가</p>
+      <p>• <strong>부정 방지</strong>: 오프라인 수익은 서버 타임스탬프 기준으로 계산. 디바이스 시간 변조 시 계산 불인정</p>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S9: UI/UX 설계 -->
+<section class="section" id="s9">
+  <div class="section-header">
+    <span class="section-num">09</span>
+    <h2 class="section-title">UI/UX 설계 명세</h2>
+  </div>
+  <div class="ui-grid">
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🏭 메인 배달 허브 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>메인 게임 화면. 허브 전경과 배달원 활동 실시간 확인
+        <strong>주요 버튼</strong>구역 탭 · 업그레이드 버튼 · 고슴도치 배치 버튼 · 광고 2배 배너
+        <strong>표시 정보</strong>초당 수익 · 현재 코인 · 구역별 배달 진행 · 에너지 바
+        <strong>유저 행동</strong>구역 탭 → 업그레이드 실행 → 배달원 배치 → 광고 보너스
+        <strong>UX 포인트</strong>구역마다 고슴도치가 실제로 굴러다니는 애니메이션. 수익 숫자가 터치 시 팡 터지는 연출
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🗺️ 도시 지도 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>전체 배달 구역 현황 파악 및 신규 구역 해금
+        <strong>주요 버튼</strong>구역 탭(해금/잠금 표시) · 도시 전환 탭 · 지역 정보 팝업
+        <strong>표시 정보</strong>구역별 점령도 · 잠금 해제 조건 · 도시별 총 수익 기여율
+        <strong>유저 행동</strong>지도 핀치줌 · 구역 탭 → 해금 확인 → 코인 투자
+        <strong>UX 포인트</strong>내가 점령한 구역이 내 배달 색상으로 물드는 시각적 피드백
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🦔 고슴도치 스카우트 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>새 배달원 영입 및 현재 보유 목록 관리
+        <strong>주요 버튼</strong>일반 스카우트 · 프리미엄 스카우트 · 10연 스카우트 · 조각 합성
+        <strong>표시 정보</strong>등급별 확률 표시(법적 요구) · 보유/미보유 캐릭터 · 조각 현황
+        <strong>유저 행동</strong>크리스탈 소비 → 스카우트 연출 → 캐릭터 획득 → 배치
+        <strong>UX 포인트</strong>스카우트 연출은 고슴도치가 배달 상자에서 튀어나오는 연출. 신화는 황금빛 가시 폭발 이펙트
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🔧 허브 자동화 강화 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>시설별 업그레이드 실행 및 비용 확인
+        <strong>주요 버튼</strong>1회 업그레이드 · 최대 업그레이드 · MAX 단축(크리스탈) · 업그레이드 비교
+        <strong>표시 정보</strong>현재 레벨 / 최대 레벨 · 업그레이드 후 수익 증가폭 미리보기 · 비용
+        <strong>유저 행동</strong>업그레이드 탭 → 수익 증가폭 확인 → 투자 결정
+        <strong>UX 포인트</strong>업그레이드 후 수익 증가를 숫자 +X% 로 즉시 피드백. "이만큼 올랐다" 쾌감 강조
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">👤 배달원 상세 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>고슴도치 능력치 확인, 레벨업, 스킬 관리
+        <strong>주요 버튼</strong>레벨업 · 스킬 강화 · 구역 배치 · 팀장 임명 · 도감 등록
+        <strong>표시 정보</strong>능력치 레이더 차트 · 현재 배치 구역 · 스킬 쿨다운 타이머
+        <strong>유저 행동</strong>능력치 확인 → 스킬 업 → 구역에 배치 → 팀장 임명
+        <strong>UX 포인트</strong>캐릭터가 화면에서 가시를 세우거나 굴러다니는 아이들 애니메이션 재생
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🏎️ 차량 차고 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>배달 차량 수집, 업그레이드, 구역 배속 설정
+        <strong>주요 버튼</strong>차량 선택 · 스킨 장착 · 구역 할당 · 차량 강화
+        <strong>표시 정보</strong>차량 컬렉션 격자 · 차량별 스탯 (속도/적재/연료) · 구역 배속 상태
+        <strong>유저 행동</strong>차량 탭 → 강화 실행 → 구역 할당
+        <strong>UX 포인트</strong>차량 강화 시 반짝이는 광택 이펙트. 스킨은 미리보기 확인 후 구매
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🏠 CEO 둥지 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>CEO 전용 특수 공간. 꾸미기 + 버프 발동
+        <strong>주요 버튼</strong>가구 배치 · 테마 교체 · CEO 버프 발동 · 방문자 초대(소셜)
+        <strong>표시 정보</strong>현재 활성 버프 목록 · 둥지 꾸밈 완성도 · 방문자 수
+        <strong>유저 행동</strong>가구 구입·배치 → 버프 발동 → SNS 공유
+        <strong>UX 포인트</strong>꾸미기 자유도 높음. 친구 둥지 방문 시 소셜 리텐션 유도
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🎪 이벤트 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>주간 이벤트·시즌 이벤트 현황 및 보상 수령
+        <strong>주요 버튼</strong>이벤트 미션 목록 · 보상 수령 · 시즌 패스 구매 · 이벤트 스토리
+        <strong>표시 정보</strong>이벤트 남은 시간 · 미션 진행도 · 보상 티어 현황
+        <strong>유저 행동</strong>미션 확인 → 목표 설정 → 플레이 → 보상 수령
+        <strong>UX 포인트</strong>이벤트 한정 고슴도치 미리보기가 눈에 잘 띄게. FOMO 유발
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🛒 상점 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>IAP 상품 및 크리스탈 소비 상점
+        <strong>주요 버튼</strong>추천 패키지 · 크리스탈 충전 · 월간 패스 · 한정 상품
+        <strong>표시 정보</strong>오늘의 추천 딜 · 남은 한정 수량 · 보유 재화 현황
+        <strong>유저 행동</strong>상품 확인 → 구매 결정 → 결제
+        <strong>UX 포인트</strong>한정 상품 타이머, "○명이 구매 중" 등 긴박감 연출은 하되 거짓 정보 금지
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">📅 출석 도장 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>매일 접속 보상 제공
+        <strong>주요 버튼</strong>오늘 도장 찍기 · 월간 캘린더 보기 · 보상 미리보기
+        <strong>표시 정보</strong>연속 출석일 · 이번 달 총 출석일 · 7일·30일 특별 보상
+        <strong>유저 행동</strong>앱 접속 → 팝업 확인 → 도장 수령
+        <strong>UX 포인트</strong>도장 찍을 때 고슴도치가 쿵 찍는 스탬프 애니메이션
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">💤 야간 배송 정산 팝업</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>오프라인 수익 확인 및 수령
+        <strong>주요 버튼</strong>수령하기 · 광고 보고 2배로 받기 · 닫기
+        <strong>표시 정보</strong>오프라인 시간 · 수익 금액 · 2배 시 금액 미리보기
+        <strong>유저 행동</strong>복귀 → 팝업 자동 표시 → 2배 광고 여부 결정
+        <strong>UX 포인트</strong>수익이 많을수록 고슴도치가 더 많은 가방을 들고 줄 서는 연출
+      </div>
+    </div>
+    <div class="ui-card">
+      <div class="ui-card-head"><div class="ui-card-title">🏆 가시컵 랭킹 화면</div></div>
+      <div class="ui-card-body">
+        <strong>화면 목적</strong>주간 수익 경쟁 랭킹 및 시즌 순위 확인
+        <strong>주요 버튼</strong>내 순위 확인 · 상위 플레이어 프로필 · 보상 확인 · 리그 정보
+        <strong>표시 정보</strong>실시간 순위 · 시즌 종료까지 남은 시간 · 리그 승급/강등 기준
+        <strong>유저 행동</strong>순위 확인 → 경쟁 의식 발동 → 플레이 강화
+        <strong>UX 포인트</strong>상위권 플레이어 CEO 둥지 미리보기로 경쟁+소셜 요소 동시 자극
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S10: 기능명 리네이밍 -->
+<section class="section" id="s10">
+  <div class="section-header">
+    <span class="section-num">10</span>
+    <h2 class="section-title">기능명 리네이밍 50선</h2>
+  </div>
+  <div class="rename-grid">
+    <div class="rename-item"><span class="rename-old">직원 고용</span><span class="rename-arrow">→</span><span class="rename-new">가시 배달원 스카우트</span></div>
+    <div class="rename-item"><span class="rename-old">오피스 업그레이드</span><span class="rename-arrow">→</span><span class="rename-new">허브 자동화 강화</span></div>
+    <div class="rename-item"><span class="rename-old">오프라인 수익</span><span class="rename-arrow">→</span><span class="rename-new">야간 배송 정산</span></div>
+    <div class="rename-item"><span class="rename-old">매니저 배치</span><span class="rename-arrow">→</span><span class="rename-new">팀장 고슴도치 임명</span></div>
+    <div class="rename-item"><span class="rename-old">이벤트</span><span class="rename-arrow">→</span><span class="rename-new">도시 긴급 배달전</span></div>
+    <div class="rename-item"><span class="rename-old">랭킹 시스템</span><span class="rename-arrow">→</span><span class="rename-new">가시컵 랭킹전</span></div>
+    <div class="rename-item"><span class="rename-old">오피스 방</span><span class="rename-arrow">→</span><span class="rename-new">배달 구역 / 거점</span></div>
+    <div class="rename-item"><span class="rename-old">고양이 직원</span><span class="rename-arrow">→</span><span class="rename-new">가시 배달원</span></div>
+    <div class="rename-item"><span class="rename-old">책상 업그레이드</span><span class="rename-arrow">→</span><span class="rename-new">배달 가방 강화</span></div>
+    <div class="rename-item"><span class="rename-old">컴퓨터 업그레이드</span><span class="rename-arrow">→</span><span class="rename-new">분류 레일 자동화</span></div>
+    <div class="rename-item"><span class="rename-old">직원 만족도</span><span class="rename-arrow">→</span><span class="rename-new">가시 에너지 지수</span></div>
+    <div class="rename-item"><span class="rename-old">임대 수익</span><span class="rename-arrow">→</span><span class="rename-new">브랜드 배달 수수료</span></div>
+    <div class="rename-item"><span class="rename-old">프리미엄 화폐</span><span class="rename-arrow">→</span><span class="rename-new">가시 크리스탈</span></div>
+    <div class="rename-item"><span class="rename-old">기본 화폐</span><span class="rename-arrow">→</span><span class="rename-new">도토리 코인</span></div>
+    <div class="rename-item"><span class="rename-old">뽑기 / 가챠</span><span class="rename-arrow">→</span><span class="rename-new">가시 배달원 스카우팅</span></div>
+    <div class="rename-item"><span class="rename-old">건물 외관 변화</span><span class="rename-arrow">→</span><span class="rename-new">허브 등급 진화</span></div>
+    <div class="rename-item"><span class="rename-old">사무실 꾸미기</span><span class="rename-arrow">→</span><span class="rename-new">배달 기지 인테리어</span></div>
+    <div class="rename-item"><span class="rename-old">펜트하우스</span><span class="rename-arrow">→</span><span class="rename-new">CEO 고슴도치 둥지</span></div>
+    <div class="rename-item"><span class="rename-old">자동차 컬렉션</span><span class="rename-arrow">→</span><span class="rename-new">배달 차량 차고</span></div>
+    <div class="rename-item"><span class="rename-old">캐릭터 등급 돌파</span><span class="rename-arrow">→</span><span class="rename-new">가시 성장 각성</span></div>
+    <div class="rename-item"><span class="rename-old">광고 시청 보상</span><span class="rename-arrow">→</span><span class="rename-new">스폰서 배달 보너스</span></div>
+    <div class="rename-item"><span class="rename-old">월정액 패스</span><span class="rename-arrow">→</span><span class="rename-new">배달 제왕 월간 패스</span></div>
+    <div class="rename-item"><span class="rename-old">시즌 패스</span><span class="rename-arrow">→</span><span class="rename-new">시즌 배달 패스</span></div>
+    <div class="rename-item"><span class="rename-old">캐릭터 스킬</span><span class="rename-arrow">→</span><span class="rename-new">배달 특기 / 가시 스킬</span></div>
+    <div class="rename-item"><span class="rename-old">업적 달성</span><span class="rename-arrow">→</span><span class="rename-new">배달 전설 업적</span></div>
+    <div class="rename-item"><span class="rename-old">출석 보상</span><span class="rename-arrow">→</span><span class="rename-new">오늘의 출근 도장</span></div>
+    <div class="rename-item"><span class="rename-old">재화 충전소</span><span class="rename-arrow">→</span><span class="rename-new">가시 크리스탈 충전소</span></div>
+    <div class="rename-item"><span class="rename-old">회사 레벨</span><span class="rename-arrow">→</span><span class="rename-new">배달 허브 등급</span></div>
+    <div class="rename-item"><span class="rename-old">프레스티지 리셋</span><span class="rename-arrow">→</span><span class="rename-new">도시 재개발 (대이동)</span></div>
+    <div class="rename-item"><span class="rename-old">영구 버프</span><span class="rename-arrow">→</span><span class="rename-new">가시 뱃지 영구 강화</span></div>
+    <div class="rename-item"><span class="rename-old">캐릭터 컬렉션</span><span class="rename-arrow">→</span><span class="rename-new">배달원 도감</span></div>
+    <div class="rename-item"><span class="rename-old">신규 구역 해금</span><span class="rename-arrow">→</span><span class="rename-new">배달 영역 개척</span></div>
+    <div class="rename-item"><span class="rename-old">수익 배율 증가</span><span class="rename-arrow">→</span><span class="rename-new">배달 효율 최적화</span></div>
+    <div class="rename-item"><span class="rename-old">이벤트 재화</span><span class="rename-arrow">→</span><span class="rename-new">배달 스탬프</span></div>
+    <div class="rename-item"><span class="rename-old">특수 아이템</span><span class="rename-arrow">→</span><span class="rename-new">가시 에너지 간식</span></div>
+    <div class="rename-item"><span class="rename-old">자동 수익</span><span class="rename-arrow">→</span><span class="rename-new">자동 배달 수익</span></div>
+    <div class="rename-item"><span class="rename-old">팀 구성</span><span class="rename-arrow">→</span><span class="rename-new">배달 팀 편성</span></div>
+    <div class="rename-item"><span class="rename-old">NPC 상점</span><span class="rename-arrow">→</span><span class="rename-new">동네 가시 상회</span></div>
+    <div class="rename-item"><span class="rename-old">푸시 알림</span><span class="rename-arrow">→</span><span class="rename-new">가시 배달 긴급 호출</span></div>
+    <div class="rename-item"><span class="rename-old">소개 튜토리얼</span><span class="rename-arrow">→</span><span class="rename-new">첫날 가시 배달 입문</span></div>
+    <div class="rename-item"><span class="rename-old">VIP 시스템</span><span class="rename-arrow">→</span><span class="rename-new">가시 제왕 클럽</span></div>
+    <div class="rename-item"><span class="rename-old">친구 초대</span><span class="rename-arrow">→</span><span class="rename-new">배달 동료 모집</span></div>
+    <div class="rename-item"><span class="rename-old">소셜 방문</span><span class="rename-arrow">→</span><span class="rename-new">동료 둥지 탐방</span></div>
+    <div class="rename-item"><span class="rename-old">아이템 합성</span><span class="rename-arrow">→</span><span class="rename-new">가시 조각 결합</span></div>
+    <div class="rename-item"><span class="rename-old">업그레이드 재료</span><span class="rename-arrow">→</span><span class="rename-new">배달 강화 부품</span></div>
+    <div class="rename-item"><span class="rename-old">게임 설정</span><span class="rename-arrow">→</span><span class="rename-new">CEO 운영 설정</span></div>
+    <div class="rename-item"><span class="rename-old">배틀 이벤트</span><span class="rename-arrow">→</span><span class="rename-new">도시 배달 대전</span></div>
+    <div class="rename-item"><span class="rename-old">챌린지 모드</span><span class="rename-arrow">→</span><span class="rename-new">긴급 주문 챌린지</span></div>
+    <div class="rename-item"><span class="rename-old">스탯 강화</span><span class="rename-arrow">→</span><span class="rename-new">배달 능력치 트레이닝</span></div>
+    <div class="rename-item"><span class="rename-old">드론 배달</span><span class="rename-arrow">→</span><span class="rename-new">가시 드론 배달대</span></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S11: 개발 명세 -->
+<section class="section" id="s11">
+  <div class="section-header">
+    <span class="section-num">11</span>
+    <h2 class="section-title">개발 명세 (Unity)</h2>
+  </div>
+
+  <div class="card">
+    <div class="card-title">전체 시스템 아키텍처</div>
+    <div class="spec-block">
+      <div class="spec-label">Architecture Overview</div>
+      <pre><span class="cm">// 핵심 아키텍처: MVC + Service Locator + ScriptableObject Data Layer</span>
+
+<span class="kw">HedgehogDelivery</span>
+├── Core
+│   ├── GameManager         <span class="cm">// 씬 전환, 초기화, 전역 이벤트 버스</span>
+│   ├── SaveManager         <span class="cm">// JSON 직렬화, AES 암호화, 클라우드 동기화</span>
+│   ├── TimeManager         <span class="cm">// 오프라인 시간 계산, 서버 시간 검증</span>
+│   └── EventBus            <span class="cm">// 느슨한 결합 이벤트 시스템</span>
+├── Data (ScriptableObjects)
+│   ├── HubConfigSO         <span class="cm">// 허브 레벨별 비용·수익 테이블</span>
+│   ├── ZoneConfigSO        <span class="cm">// 구역별 기본 설정</span>
+│   ├── HedgehogDataSO      <span class="cm">// 캐릭터 능력치·스킬 정의</span>
+│   ├── VehicleDataSO       <span class="cm">// 차량 스탯·스킨</span>
+│   └── EventConfigSO       <span class="cm">// 이벤트 미션·보상</span>
+├── Systems
+│   ├── RevenueSystem       <span class="cm">// 수익 계산, 배율 적용</span>
+│   ├── OfflineSystem       <span class="cm">// 오프라인 수익 계산 로직</span>
+│   ├── UpgradeSystem       <span class="cm">// 비용 공식, 레벨 관리</span>
+│   ├── GachaSystem         <span class="cm">// 스카우팅 확률·보장 시스템</span>
+│   ├── PrestigeSystem      <span class="cm">// 리셋·뱃지 계산</span>
+│   └── NotificationSystem  <span class="cm">// 로컬 푸시 알림</span>
+├── UI
+│   ├── HubView             <span class="cm">// 메인 허브 화면</span>
+│   ├── MapView             <span class="cm">// 도시 지도</span>
+│   ├── ScoutView           <span class="cm">// 고슴도치 스카우트</span>
+│   ├── ShopView            <span class="cm">// 상점 (IAP 포함)</span>
+│   └── EventView           <span class="cm">// 이벤트·랭킹</span>
+└── Services
+    ├── IAPService          <span class="cm">// Unity IAP 래퍼</span>
+    ├── AdService           <span class="cm">// AdMob / IronSource 래퍼</span>
+    ├── AnalyticsService    <span class="cm">// Firebase Analytics 래퍼</span>
+    └── RemoteConfigService <span class="cm">// Firebase Remote Config</span></pre>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">주요 씬 구조</div>
+      <div class="spec-block">
+        <pre><span class="cm">// Unity Scenes</span>
+Boot            <span class="cm">// 초기화, 저장 로드, 서버 시간 동기화</span>
+MainHub         <span class="cm">// 메인 게임 화면 (Additive 로딩)</span>
+CityMap         <span class="cm">// 도시 지도 (별도 씬 또는 UI 오버레이)</span>
+ScoutScene      <span class="cm">// 스카우트 연출 전용</span>
+EventScene      <span class="cm">// 이벤트 전용</span>
+Persistent      <span class="cm">// DontDestroyOnLoad: Audio, Managers</span></pre>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">저장 데이터 구조 (JSON)</div>
+      <div class="spec-block">
+        <pre><span class="kw">PlayerSaveData</span> {
+  hubLevel: <span class="num">int</span>,
+  coins: <span class="num">double</span>,         <span class="cm">// 정밀도 주의 (BigDecimal)</span>
+  crystals: <span class="num">int</span>,
+  zones: ZoneSaveData[],
+  hedgehogs: CharSaveData[],
+  vehicles: VehicleSaveData[],
+  prestigeBadges: <span class="num">int</span>,
+  lastOnlineTime: <span class="num">long</span>,  <span class="cm">// UTC Unix timestamp</span>
+  eventProgress: {},
+  achievements: {},
+  settings: SettingsData
+}</pre>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">오프라인 보상 계산 로직</div>
+    <div class="spec-block">
+      <pre><span class="cm">// OfflineSystem.cs</span>
+<span class="kw">double</span> CalculateOfflineRevenue(<span class="kw">long</span> lastOnlineUtc) {
+    <span class="kw">long</span> now = ServerTimeManager.GetUtcNow();
+    <span class="kw">double</span> elapsedSeconds = Mathf.Clamp(now - lastOnlineUtc, <span class="num">0</span>, MaxOfflineSeconds);
+    <span class="cm">// MaxOfflineSeconds = 정산 사무실 레벨 × 3600 (기본 4h)</span>
+
+    <span class="kw">double</span> revenuePerSec = RevenueSystem.GetTotalRevenuePerSecond();
+    <span class="kw">double</span> nightBonus = HasNightSpecialistDeployed() ? <span class="num">1.3</span> : <span class="num">1.0</span>;
+    <span class="kw">double</span> prestigeMult = PrestigeSystem.GetCurrentMultiplier();
+
+    <span class="kw">return</span> revenuePerSec × elapsedSeconds × nightBonus × prestigeMult;
+}
+<span class="cm">// 주의: 서버 UTC 기준으로만 계산. 클라이언트 시간 변조 방지</span></pre>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">광고 SDK 연동 포인트</div>
+      <div class="card-body" style="font-size:12px">
+        <p>• <strong>메인 화면</strong>: 배너 광고 (하단 고정, 게임 플레이 방해 최소화)</p>
+        <p>• <strong>야간 정산 팝업</strong>: 2배 수령 전면 광고 (Rewarded)</p>
+        <p>• <strong>업그레이드 부족</strong>: "광고 보고 코인 받기" 버튼 (Rewarded)</p>
+        <p>• <strong>오프라인 팝업</strong>: 수익 2배 시청 (Rewarded, 1일 3회)</p>
+        <p>• <strong>스카우트 화면</strong>: 무료 스카우트 1회/일 (Rewarded)</p>
+        <p>• <strong>이벤트 화면</strong>: 이벤트 재화 보너스 (Rewarded)</p>
+        <p>• SDK 우선순위: AdMob → IronSource(Mediation) → Unity Ads</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Firebase Analytics 이벤트 설계</div>
+      <div class="card-body" style="font-size:12px">
+        <p>• <code>hub_upgraded</code> {level, cost}</p>
+        <p>• <code>zone_unlocked</code> {zone_id, total_zones}</p>
+        <p>• <code>scout_performed</code> {type, result_rarity}</p>
+        <p>• <code>offline_reward_claimed</code> {amount, ad_watched}</p>
+        <p>• <code>prestige_reset</code> {badges_earned, hub_level}</p>
+        <p>• <code>iap_purchase</code> {product_id, price, currency}</p>
+        <p>• <code>event_completed</code> {event_id, tier}</p>
+        <p>• <code>ad_rewarded_watched</code> {placement, reward_type}</p>
+        <p>• <code>first_legendary_obtained</code> {char_id}</p>
+        <p>• <code>session_start</code> {day, hub_level, coin_amount}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:16px">
+    <div class="card-title">푸시 알림 설계</div>
+    <div class="tbl-wrap" style="margin:10px 0 0">
+      <table>
+        <thead><tr><th>트리거</th><th>메시지 예시</th><th>딜레이</th><th>반복</th></tr></thead>
+        <tbody>
+          <tr><td>오프라인 수익 한도 도달</td><td>"🦔 야간 배송 정산이 꽉 찼어요! 지금 수령하세요"</td><td>4h (기본)</td><td>1회/회차</td></tr>
+          <tr><td>이벤트 종료 임박</td><td>"⏰ 도시 긴급 배달전이 2시간 후 종료됩니다!"</td><td>이벤트 종료 2h 전</td><td>이벤트당 1회</td></tr>
+          <tr><td>출석 미완료</td><td>"📮 오늘 출근 도장을 아직 안 찍었어요!"</td><td>자정 기준 21시</td><td>매일</td></tr>
+          <tr><td>팀장 자동화 완성</td><td>"✅ 팀장 고슴도치가 구역 자동화를 완료했어요"</td><td>완성 즉시</td><td>완성시마다</td></tr>
+          <tr><td>가시 에너지 충전 완료</td><td>"⚡ 가시 에너지가 가득 찼어요! 스킬을 써보세요"</td><td>충전 완료 즉시</td><td>충전시마다</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S12: MVP 계획 -->
+<section class="section" id="s12">
+  <div class="section-header">
+    <span class="section-num">12</span>
+    <h2 class="section-title">MVP 개발 계획 (3개월)</h2>
+  </div>
+  <div class="tbl-wrap">
+    <table class="priority-table">
+      <thead><tr><th>기능</th><th>우선순위</th><th>공수(일)</th><th>담당</th><th>비고</th></tr></thead>
+      <tbody>
+        <tr><td>배달 허브 메인 화면</td><td><span class="p-must">MUST</span></td><td>10</td><td>클라 2</td><td>핵심 루프 중심</td></tr>
+        <tr><td>배달 구역 시스템 (6구역)</td><td><span class="p-must">MUST</span></td><td>8</td><td>클라 1 + 서버 1</td><td>MVP는 6구역만</td></tr>
+        <tr><td>고슴도치 배달원 시스템 (10종)</td><td><span class="p-must">MUST</span></td><td>10</td><td>클라 1 + 기획 1</td><td>일반·희귀 위주</td></tr>
+        <tr><td>도토리 코인·가시 크리스탈</td><td><span class="p-must">MUST</span></td><td>4</td><td>서버 1</td><td>재화 기반</td></tr>
+        <tr><td>오프라인 수익 시스템</td><td><span class="p-must">MUST</span></td><td>5</td><td>클라 1 + 서버 1</td><td>핵심 리텐션 기능</td></tr>
+        <tr><td>광고 보상 시스템 (AdMob)</td><td><span class="p-must">MUST</span></td><td>4</td><td>클라 1</td><td>수익 모델 핵심</td></tr>
+        <tr><td>IAP 시스템 (Unity IAP)</td><td><span class="p-must">MUST</span></td><td>5</td><td>클라 1 + 서버 1</td><td>스타터·월간패스</td></tr>
+        <tr><td>저장 시스템 (로컬+클라우드)</td><td><span class="p-must">MUST</span></td><td>6</td><td>서버 1</td><td>데이터 보호 필수</td></tr>
+        <tr><td>출석 보상</td><td><span class="p-must">MUST</span></td><td>3</td><td>클라 1</td><td>DAU 기초</td></tr>
+        <tr><td>기본 업그레이드 UI</td><td><span class="p-must">MUST</span></td><td>7</td><td>클라 2</td><td>핵심 인터랙션</td></tr>
+        <tr><td>팀장 임명 (자동화)</td><td><span class="p-should">SHOULD</span></td><td>5</td><td>클라 1</td><td>방치형 핵심</td></tr>
+        <tr><td>가시컵 랭킹 (시즌 1)</td><td><span class="p-should">SHOULD</span></td><td>8</td><td>서버 1 + 클라 1</td><td>경쟁 요소</td></tr>
+        <tr><td>주간 이벤트 1종</td><td><span class="p-should">SHOULD</span></td><td>7</td><td>클라 1 + 기획 1</td><td>엔게이지먼트</td></tr>
+        <tr><td>푸시 알림</td><td><span class="p-should">SHOULD</span></td><td>3</td><td>클라 1</td><td>리텐션</td></tr>
+        <tr><td>Firebase Analytics</td><td><span class="p-should">SHOULD</span></td><td>3</td><td>클라 1</td><td>데이터 수집</td></tr>
+        <tr><td>CEO 둥지·꾸미기</td><td><span class="p-could">COULD</span></td><td>10</td><td>클라 2</td><td>v1.1 목표</td></tr>
+        <tr><td>차량 차고 시스템</td><td><span class="p-could">COULD</span></td><td>8</td><td>클라 1</td><td>v1.1 목표</td></tr>
+        <tr><td>프레스티지 시스템</td><td><span class="p-could">COULD</span></td><td>8</td><td>클라 1 + 서버 1</td><td>v1.1 목표</td></tr>
+        <tr><td>우주 도시 확장</td><td><span class="p-wont">LATER</span></td><td>15</td><td>전팀</td><td>v2.0 장기 계획</td></tr>
+        <tr><td>신화 등급 고슴도치</td><td><span class="p-wont">LATER</span></td><td>10</td><td>기획 + 클라</td><td>v2.0 대규모 업데이트</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="grid-2" style="margin-top:16px">
+    <div class="card">
+      <div class="card-title">📅 3개월 개발 일정표</div>
+      <div class="timeline">
+        <div class="tl-item"><h4>Month 1 · Week 1–2: 기초 구축</h4><p>Unity 프로젝트 셋업, 데이터 테이블 설계, 허브 메인 씬 프로토타입, 수익 계산 코어 로직</p></div>
+        <div class="tl-item"><h4>Month 1 · Week 3–4: 핵심 루프</h4><p>배달 구역 시스템 구현, 고슴도치 배달원 6종 구현, 업그레이드 UI, 저장 시스템 기초</p></div>
+        <div class="tl-item"><h4>Month 2 · Week 1–2: 수익·리텐션</h4><p>오프라인 수익 시스템, 광고 SDK 연동(AdMob), IAP 연동(Unity IAP), 출석 보상</p></div>
+        <div class="tl-item"><h4>Month 2 · Week 3–4: 완성도 향상</h4><p>나머지 고슴도치 4종, 팀장 자동화, 도시 지도 UI, Firebase Analytics 연동</p></div>
+        <div class="tl-item"><h4>Month 3 · Week 1–2: 소셜·이벤트</h4><p>주간 이벤트 1종, 가시컵 랭킹 기초, 푸시 알림, 서버 구축 완료</p></div>
+        <div class="tl-item"><h4>Month 3 · Week 3: QA·밸런싱</h4><p>전체 QA, 수익 밸런스 조정, 광고 빈도 최적화, 성능 최적화 (저사양 기기)</p></div>
+        <div class="tl-item"><h4>Month 3 · Week 4: 출시 준비</h4><p>스토어 등록, ASO 최적화, 소프트론치 (캐나다/호주), 지표 수집 및 핫픽스</p></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">👥 인력 구성 및 리스크</div>
+      <div class="card-body">
+        <p style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:8px">최소 인력 (5인)</p>
+        <p>• <strong>클라이언트 개발자 2</strong>: Unity C#, UI/UX 구현</p>
+        <p>• <strong>서버 개발자 1</strong>: Node.js + Firebase, 저장/랭킹</p>
+        <p>• <strong>게임 기획자 1</strong>: 밸런스, 이벤트, 컨텐츠</p>
+        <p>• <strong>2D 아티스트 1</strong>: UI, 캐릭터 스프라이트, 허브 외관</p>
+        <br>
+        <p style="font-size:13px;font-weight:700;color:var(--txt);margin-bottom:8px">⚠️ 주요 리스크</p>
+        <p>• <strong>Big Number 오버플로우</strong>: double 대신 커스텀 BigNumber 라이브러리 사용 권장</p>
+        <p>• <strong>저사양 기기 성능</strong>: 배달원 애니메이션 LOD 시스템 필수</p>
+        <p>• <strong>광고 수익 불확실성</strong>: IAP 30% 이상 확보 목표</p>
+        <p>• <strong>구글/앱스토어 정책</strong>: 가챠 확률 표시 의무화 준수</p>
+        <p>• <strong>밸런스 붕괴</strong>: 주 2회 이상 지표 리뷰 필수</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S13: 차별화 포인트 -->
+<section class="section" id="s13">
+  <div class="section-header">
+    <span class="section-num">13</span>
+    <h2 class="section-title">차별화 포인트 10가지</h2>
+  </div>
+  <div class="diff-grid">
+    <div class="diff-card"><div class="diff-num">01</div><div class="diff-title">굴러가는 배달 연출</div><div class="diff-desc">고슴도치가 배달 시 공처럼 둥글게 몸을 말아 굴러가는 독창적 이동 애니메이션. 경사로를 내려올 때 속도가 붙고 평지에서 다시 펴진다. 어디서도 볼 수 없는 배달 연출.</div></div>
+    <div class="diff-card"><div class="diff-num">02</div><div class="diff-title">날씨 영향 시스템</div><div class="diff-desc">비 오는 날은 고슴도치 이동속도 -15% / 가시 에너지 -10%, 맑은 날은 보너스 +10%. 태풍 날씨엔 특급 배달 수수료 2배지만 파손률 증가. 날씨가 전략 변수가 된다.</div></div>
+    <div class="diff-card"><div class="diff-num">03</div><div class="diff-title">가시 에너지 시스템</div><div class="diff-desc">고슴도치 전용 독창적 피로도 개념. 에너지가 높을수록 가시가 곤두서고 능력이 강해짐. 에너지 0이 되면 가시가 납작해지며 배달 효율 급락. 간식 공장이 핵심 전략 시설이 된다.</div></div>
+    <div class="diff-card"><div class="diff-num">04</div><div class="diff-title">음식 냄새 버프</div><div class="diff-desc">특정 음식 배달 시 고슴도치 능력치 상승. 도토리 맛 간식 = 방어력↑, 버섯 = 이동속도↑, 딸기 = 수익↑. 배달 구역별 특화 음식이 있어 구역-캐릭터 최적 매칭 전략 요소 부여.</div></div>
+    <div class="diff-card"><div class="diff-num">05</div><div class="diff-title">도시별 배달 문화 차이</div><div class="diff-desc">도심 = 속도 최우선 / 학원가 = 야간 주문 폭발 / 항구 = 대형 화물 고수익 / 비밀 숲 = 마법 소포(랜덤 이벤트). 각 도시에 최적화된 고슴도치 조합이 다르다.</div></div>
+    <div class="diff-card"><div class="diff-num">06</div><div class="diff-title">리얼타임 날씨 연동 (선택)</div><div class="diff-desc">사용자 실제 위치의 날씨 API 연동 옵션. 현실에서 비가 오면 게임 내도 비가 온다. 거절 시 랜덤 날씨. 실세계 연결감으로 화제성·리텐션 동시 확보.</div></div>
+    <div class="diff-card"><div class="diff-num">07</div><div class="diff-title">간식 공장 서브 경영</div><div class="diff-desc">고슴도치 전용 간식 제조 미니 게임. 재료 조합 → 간식 생산 → 배달원 능력 강화. 단순 소비 재화가 아니라 "만들어 쓰는" 능동적 경영 요소. 타 게임에 없는 고슴도치 특화 콘텐츠.</div></div>
+    <div class="diff-card"><div class="diff-num">08</div><div class="diff-title">배달 사고 랜덤 이벤트</div><div class="diff-desc">가끔 배달 중 "고슴도치가 도랑에 빠짐!" "고양이가 배달 방해!" 같은 랜덤 이벤트 발생. 즉각 대처하면 보너스, 방치하면 패널티. 단조로운 방치 루프에 긴장감을 더한다.</div></div>
+    <div class="diff-card"><div class="diff-num">09</div><div class="diff-title">고슴도치 가족 트리 시스템</div><div class="diff-desc">특정 캐릭터 조합 시 "가족 시너지" 발동. 솜털이+밤톨이 = 형제 배달 시너지 +20%. 가족 구성 완성이 별도의 수집 목표가 되어 장기 플레이 동기를 강화한다.</div></div>
+    <div class="diff-card"><div class="diff-num">10</div><div class="diff-title">우주 배달 엔드게임</div><div class="diff-desc">지구 도시를 넘어 우주 정거장, 달 기지, 은하 익스프레스까지 확장. 우주 구역은 일반 법칙이 달라짐 (중력 없음 = 이동 방식 변화, 우주복 착용 필수 등). 지상 게임과 다른 새로운 도전.</div></div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S14: 업데이트 로드맵 -->
+<section class="section" id="s14">
+  <div class="section-header">
+    <span class="section-num">14</span>
+    <h2 class="section-title">출시 후 업데이트 로드맵</h2>
+  </div>
+  <div class="rm-grid">
+    <div class="rm-card">
+      <div class="rm-quarter">출시 직후 · M+1</div>
+      <h4>v1.0 → v1.1<br>기반 안정화</h4>
+      <ul>
+        <li>핫픽스 및 밸런스 패치</li>
+        <li>CEO 둥지·꾸미기 오픈</li>
+        <li>차량 차고 시스템 추가</li>
+        <li>가시컵 시즌 2 개막</li>
+        <li>소셜: 친구 둥지 방문</li>
+      </ul>
+    </div>
+    <div class="rm-card" style="border-top-color:var(--green)">
+      <div class="rm-quarter" style="color:var(--green)">M+2~3</div>
+      <h4>v1.2<br>프레스티지 & 확장</h4>
+      <ul>
+        <li>프레스티지 시스템 오픈</li>
+        <li>항구 도시 해금</li>
+        <li>영웅 등급 고슴도치 5종 추가</li>
+        <li>날씨 시스템 도입</li>
+        <li>간식 공장 업데이트</li>
+      </ul>
+    </div>
+    <div class="rm-card" style="border-top-color:var(--purple)">
+      <div class="rm-quarter" style="color:var(--purple)">M+4~6</div>
+      <h4>v2.0<br>전설 & 비밀 숲</h4>
+      <ul>
+        <li>전설 등급 고슴도치 5종</li>
+        <li>비밀 숲 도시 해금</li>
+        <li>가족 시너지 시스템</li>
+        <li>PvP 배달 대전 (길드)</li>
+        <li>시즌 스토리 콘텐츠</li>
+      </ul>
+    </div>
+    <div class="rm-card" style="border-top-color:var(--gold)">
+      <div class="rm-quarter" style="color:#a07010">M+7~12</div>
+      <h4>v3.0<br>우주 & 신화</h4>
+      <ul>
+        <li>신화 등급 고슴도치 5종</li>
+        <li>우주 정거장·달 기지 해금</li>
+        <li>드론 배달 시스템</li>
+        <li>크로스플랫폼 랭킹</li>
+        <li>글로벌 배달 이벤트</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<hr class="section-divider">
+
+<!-- S15: 추가 제안 -->
+<section class="section" id="s15">
+  <div class="section-header">
+    <span class="section-num">15</span>
+    <h2 class="section-title">추가 개선 제안</h2>
+  </div>
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title">🎮 게임플레이 강화 제안</div>
+      <div class="card-body">
+        <p><strong>1. 배달 스토리 모드</strong><br>각 도시에 에피소드형 스토리. 고슴도치 배달원들의 서사를 단편 만화 연출로 제공. 스토리 완결 시 전용 보상 → 다음 도시 진입 동기 강화.</p>
+        <br>
+        <p><strong>2. 실시간 배달 경쟁 (Co-op)</strong><br>동시 접속 유저 2–4명이 같은 도시에서 협력 배달. 합산 수익이 목표를 넘으면 전원 보상. PvE 협력 콘텐츠로 소셜 리텐션 향상.</p>
+        <br>
+        <p><strong>3. 고슴도치 성격 시스템 심화</strong><br>각 캐릭터가 특정 구역/날씨/음식에 好불호 설정. 선호 조건에서 능력 +20%, 비선호 시 -10%. 배치 전략의 깊이를 더함.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">📊 수익화 개선 제안</div>
+      <div class="card-body">
+        <p><strong>1. 배틀패스 시즌 테마 강화</strong><br>시즌마다 완전히 다른 세계관 (여름 해변 배달, 크리스마스 특급 배달, 우주 데이). 한정 스킨은 시즌 종료 후 절대 재판매 금지 → FOMO 극대화.</p>
+        <br>
+        <p><strong>2. 구독 연간 모델 도입</strong><br>월간 패스 외 연간 구독 ₩55,000 (월환산 시 40% 할인). 장기 결제 유저 LTV 대폭 향상. 해지율 감소 효과.</p>
+        <br>
+        <p><strong>3. 광고 빈도 A/B 테스트 자동화</strong><br>Firebase Remote Config로 광고 등장 빈도·위치를 실시간 A/B 테스트. DAU × ARPU 최적화 자동화. 수동 밸런싱 대비 수익 10–15% 향상 기대.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🔧 기술적 개선 제안</div>
+      <div class="card-body">
+        <p><strong>1. Addressable Assets</strong><br>캐릭터·스킨을 Addressable로 관리. 앱 초기 용량 50MB 이하 유지, 콘텐츠 추가 시 다운로드 방식으로 스토어 업데이트 없이 신규 캐릭터 공급 가능.</p>
+        <br>
+        <p><strong>2. 서버리스 구조 도입</strong><br>Firebase Firestore + Cloud Functions. 초기 서버 비용 최소화, 유저 급증 시 자동 스케일링. 소규모 팀에 최적.</p>
+        <br>
+        <p><strong>3. BigNumber 라이브러리</strong><br>수치가 1조를 넘어가는 방치형 특성상 float/double로는 정밀도 오류 발생. 전용 BigNumber(e 표기 지원) 라이브러리 필수 도입. 오픈소스 IdleNumbers 라이브러리 활용 권장.</p>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">🌍 글로벌 출시 전략 제안</div>
+      <div class="card-body">
+        <p><strong>1. 소프트론치 → 글로벌 전략</strong><br>캐나다·호주 소프트론치 2주 → 지표 수집 → 밸런스 패치 → 전 세계 출시. 한국 직출시는 성숙 시장 특성상 리스크가 큼.</p>
+        <br>
+        <p><strong>2. 일본·동남아 특화</strong><br>일본: 고슴도치 캐릭터 인기 시장 (가챠 친화적). 동남아: 저사양 기기 최적화, 로컬 결제수단(GoPay, GrabPay) 연동. 지역별 이벤트 테마 현지화.</p>
+        <br>
+        <p><strong>3. UGC 허용 전략</strong><br>팬아트·영상 제작 공식 허용 정책 발표. TikTok·YouTube 크리에이터 공략. "고슴도치 굴러가는 연출"은 숏폼 밈으로 바이럴 가능성 높음.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</div><!-- /content -->
+
+<footer>
+  <p>고슴도치 배달 타이쿤 GDD v1.0 · 기획일: 2026-06-24 · 작성: Claude (claude-sonnet-4-6) · 내부 기획 전용 문서 — 외부 배포 금지</p>
+</footer>
+
+</main>
+
+<script>
+// nav active state on scroll
+const sections = document.querySelectorAll('section[id]');
+const navItems = document.querySelectorAll('.nav-item');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const active = document.querySelector(`.nav-item[href="#${e.target.id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { rootMargin: '-30% 0px -65% 0px' });
+sections.forEach(s => observer.observe(s));
+</script>
